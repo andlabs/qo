@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"bytes"
@@ -30,6 +29,7 @@ func (e *Executor) Do() {
 
 var builder = make(chan *Executor)
 
+/*
 func main() {
 	go (&Executor{
 		Name:	"echo",
@@ -53,3 +53,4 @@ func main() {
 		fmt.Printf("%q %q\n", e.Stdout.String(), e.Stderr.String())
 	}
 }
+*/

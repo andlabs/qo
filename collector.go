@@ -55,9 +55,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("C files: %q\n", cfiles)
-	fmt.Printf("C++ files: %q\n", cppfiles)
-	fmt.Printf("headers: %q\n", hfiles)
-	fmt.Printf("Objective-C files: %q\n", mfiles)
-	fmt.Printf("Objective-C++ files: %q\n", mmfiles)
+	buildScript()
+	for _, s := range script {
+		for _, e := range *s {
+			fmt.Printf("%#v\n", e)
+		}
+	}
 }
