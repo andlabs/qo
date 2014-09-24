@@ -2,6 +2,10 @@
 
 package main
 
+import (
+	"flag"
+)
+
 type Toolchain struct {
 	CC			string
 	CPP			string
@@ -48,3 +52,4 @@ func init() {
 }
 
 var selectedToolchain *Toolchain
+var selectToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
