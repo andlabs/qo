@@ -51,10 +51,12 @@ func walker(path string, info os.FileInfo, err error) error {
 }
 
 func main() {
+//	flags.Parse()
 	err := filepath.Walk(".", walker)
 	if err != nil {
 		panic(err)
 	}
+	compileFlags()
 	buildScript()
 	for _, s := range script {
 		for _, e := range *s {

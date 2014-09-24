@@ -42,8 +42,9 @@ func buildScript() {
 		object = filepath.Join(".qoobj", object)
 		e = &Executor{
 			Name:	"Compiled " + f,
-			Line:		[]string{"gcc", f, "-c", "-o", object},
+			Line:		[]string{toolchain.CC, f, "-c", "-o", object},
 		}
+		e.Line = append(e.Line, toolchain.CFLAGS...)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}

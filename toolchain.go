@@ -14,6 +14,7 @@ type Toolchain struct {
 	CPPFLAGS		[]string
 	LDFLAGS		[]string
 	LDCPPFLAGS	[]string	// appended to LDFLAGS if at least one C++ file is present
+	IsGCC		bool		// for the flag compiler
 }
 
 var toolchains = make(map[string]*Toolchain)
@@ -27,6 +28,11 @@ var gccbase = &Toolchain{
 	LDFLAGS:		nil,
 }
 
+var gccarchflags = map[string]string{
+	"386":		"-m32",
+	"amd64":		"-m64",
+}
+
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
 // - CXX instead of CPP?
@@ -36,20 +42,15 @@ func init() {
 		CC:			"gcc",
 		CPP:			"g++",
 		LD:			"gcc",
-		CFLAGS:		gccbase.CFLAGS,
-		CPPFLAGS:	gccbase.CPPFLAGS,
-		LDFLAGS:		gccbase.LDFLAGS,
+		IsGCC:		true,
 	}
 	toolchains["clang"] = &Toolchain{
 		CC:			"clang",
 		CPP:			"clang++",
 		LD:			"clang",
-		CFLAGS:		gccbase.CFLAGS,
-		CPPFLAGS:	gccbase.CPPFLAGS,
-		LDFLAGS:		gccbase.LDFLAGS,
+		IsGCC:		true,
 	}
 	// TODO: MinGW cross-compiling, MSVC, Plan 9 compilers
 }
 
-var selectedToolchain *Toolchain
-var selectToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
+var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
