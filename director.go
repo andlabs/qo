@@ -25,14 +25,16 @@ func (s Stage) Swap(i, j int) {
 var script []Stage
 var nStages int
 
-func makeCompileStep(f string, cc string, flags []string) (*Executor, string) {
+func makeCompileStep(f string, cc string, flags []string, outflag []string) (*Executor, string) {
 	object := strings.Replace(f, string(filepath.Separator), "_", -1) + ".o"
 	object = filepath.Join(".qoobj", object)
 	e := &Executor{
 		Name:	"Compiled " + f,
-		Line:		[]string{cc, f, "-c", "-o", object},
+		Line:		[]string{cc, f},
 	}
 	e.Line = append(e.Line, flags...)
+	e.Line = append(e.Line, outflag...)
+	e.Line = append(e.Line, object)
 	return e, object
 }
 
@@ -53,13 +55,13 @@ func buildScript() {
 	objects := []string(nil)
 	linker := toolchain.LD
 	for _, f := range cfiles {
-		e, object := makeCompileStep(f, toolchain.CC, toolchain.CFLAGS)
+		e, object := makeCompileStep(f, toolchain.CC, toolchain.CFLAGS, toolchain.COUTPUT)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}
 	for _, f := range cppfiles {
 		linker = toolchain.LDCXX		// run only if cppfiles isn't empty
-		e, object := makeCompileStep(f, toolchain.CXX, toolchain.CXXFLAGS)
+		e, object := makeCompileStep(f, toolchain.CXX, toolchain.CXXFLAGS, toolchain.COUTPUT)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}
@@ -74,9 +76,11 @@ func buildScript() {
 		Name:	"Linked " + target,
 		Line:		make([]string, 0, len(objects) + len(toolchain.LDFLAGS) + 10),
 	}
-	e.Line = append(e.Line, linker, "-o", target)
+	e.Line = append(e.Line, linker)
 	e.Line = append(e.Line, objects...)
 	e.Line = append(e.Line, toolchain.LDFLAGS...)
+	e.Line = append(e.Line, toolchain.LDOUTPUT...)
+	e.Line = append(e.Line, target)
 	script = append(script, Stage{e})
 	nStages++
 }

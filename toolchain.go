@@ -17,22 +17,26 @@ type Toolchain struct {
 	CXXFLAGS	[]string
 	LDFLAGS		[]string
 	LDCXXFLAGS	[]string	// appended to LDFLAGS if at least one C++ file is present
-	IsGCC		bool		// for the flag compiler
 	CDEBUG		[]string	// appended to CFLAGS *and* CXXFLAGS
 	LDDEBUG		[]string
+	COUTPUT		[]string	// prepended to output filename on both CFLAGS *and CXXFLAGS
+	LDOUTPUT	[]string
 }
 
 var toolchains = make(map[string]*Toolchain)
 
 // values for CFLAGS/CXXFLAGS/LDFLAGS shared by all gcc and clang variants
+// specify -c here to keep things clean
 // we specify -Wno-unused-parameter for the case where we are defining an interface and are not using some parameter
 // I refuse to support C11.
 var gccbase = &Toolchain{
-	CFLAGS:		[]string{"--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter"},
-	CXXFLAGS:	[]string{"--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter"},
+	CFLAGS:		[]string{"-c", "--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter"},
+	CXXFLAGS:	[]string{"-c", "--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter"},
 	LDFLAGS:		nil,
 	CDEBUG:		[]string{"-g"},
 	LDDEBUG:		[]string{"-g"},
+	COUTPUT:		[]string{"-o"},
+	LDOUTPUT:	[]string{"-o"},
 }
 
 var gccarchflags = map[string]string{
@@ -42,6 +46,20 @@ var gccarchflags = map[string]string{
 
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
+// - simplify the below
+
+func gcc(t *Toolchain) {
+	t.CFLAGS = append(t.CFLAGS, gccbase.CFLAGS...)
+	t.CFLAGS = append(t.CFLAGS, gccarchflags[*targetArch])
+	t.CXXFLAGS = append(t.CXXFLAGS, gccbase.CXXFLAGS...)
+	t.CXXFLAGS = append(t.CXXFLAGS, gccarchflags[*targetArch])
+	t.LDFLAGS = append(t.LDFLAGS, gccbase.LDFLAGS...)
+	t.LDFLAGS = append(t.LDFLAGS, gccarchflags[*targetArch])
+	t.CDEBUG = append(t.CDEBUG, gccbase.CDEBUG...)
+	t.LDDEBUG = append(t.LDDEBUG, gccbase.LDDEBUG...)
+	t.COUTPUT = append(t.COUTPUT, gccbase.COUTPUT...)
+	t.LDOUTPUT = append(t.LDOUTPUT, gccbase.LDOUTPUT...)
+}
 
 func init() {
 	toolchains["gcc"] = &Toolchain{
@@ -49,15 +67,15 @@ func init() {
 		CXX:			"g++",
 		LD:			"gcc",
 		LDCXX:		"g++",
-		IsGCC:		true,
 	}
+	gcc(toolchains["gcc"])
 	toolchains["clang"] = &Toolchain{
 		CC:			"clang",
 		CXX:			"clang++",
 		LD:			"clang",
 		LDCXX:		"clang++",
-		IsGCC:		true,
 	}
+	gcc(toolchains["clang"])
 	// TODO: MinGW cross-compiling, MSVC, Plan 9 compilers
 }
 
