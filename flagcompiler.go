@@ -23,14 +23,14 @@ func compileFlags() {
 	if toolchain.IsGCC {
 		toolchain.CFLAGS = append(toolchain.CFLAGS, gccbase.CFLAGS...)
 		toolchain.CFLAGS = append(toolchain.CFLAGS, gccarchflags[*targetArch])
-		toolchain.CPPFLAGS = append(toolchain.CPPFLAGS, gccbase.CPPFLAGS...)
-		toolchain.CPPFLAGS = append(toolchain.CPPFLAGS, gccarchflags[*targetArch])
+		toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, gccbase.CXXFLAGS...)
+		toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, gccarchflags[*targetArch])
 		toolchain.LDFLAGS = append(toolchain.LDFLAGS, gccbase.LDFLAGS...)
 		toolchain.LDFLAGS = append(toolchain.LDFLAGS, gccarchflags[*targetArch])
 	}
 
 	toolchain.CFLAGS = append(toolchain.CFLAGS, strings.Fields(os.Getenv("CFLAGS"))...)
-	toolchain.CPPFLAGS = append(toolchain.CPPFLAGS, strings.Fields(os.Getenv("CPPFLAGS"))...)
+	toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, strings.Fields(os.Getenv("CXXFLAGS"))...)
 	toolchain.LDFLAGS = append(toolchain.LDFLAGS, strings.Fields(os.Getenv("LDFLAGS"))...)
 
 	// TODO read each file and append flags

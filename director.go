@@ -57,7 +57,7 @@ func buildScript() {
 		objects = append(objects, object)
 	}
 	for _, f := range cppfiles {
-		e, object := makeCompileStep(f, toolchain.CPP, toolchain.CPPFLAGS)
+		e, object := makeCompileStep(f, toolchain.CXX, toolchain.CXXFLAGS)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}
