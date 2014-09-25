@@ -2,6 +2,11 @@
 
 package main
 
+import (
+	"os"
+	"strings"
+)
+
 var toolchain Toolchain
 
 func compileFlags() {
@@ -24,6 +29,9 @@ func compileFlags() {
 		toolchain.LDFLAGS = append(toolchain.LDFLAGS, gccarchflags[*targetArch])
 	}
 
-	// TODO append flags from environment variables (TODO figure out how to handle quotes)
+	toolchain.CFLAGS = append(toolchain.CFLAGS, strings.Fields(os.Getenv("CFLAGS"))...)
+	toolchain.CPPFLAGS = append(toolchain.CPPFLAGS, strings.Fields(os.Getenv("CPPFLAGS"))...)
+	toolchain.LDFLAGS = append(toolchain.LDFLAGS, strings.Fields(os.Getenv("LDFLAGS"))...)
+
 	// TODO read each file and append flags
 }
