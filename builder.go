@@ -3,8 +3,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
+
+var percentPer float64
+var progress float64
 
 func runStage(s Stage) (success bool) {
 	indices := make(map[*Executor]int)
@@ -17,11 +21,15 @@ func runStage(s Stage) (success bool) {
 		e := <-builder
 		delete(indices, e)
 		// TODO check error
+		progress += percentPer
+		fmt.Printf("[%3d%%] %s\n", int(progress), e.Name)
 	}
 	return true
 }
 
 func run() {
+	percentPer = 100 / float64(nStages)
+	progress = 0
 	for _, stage := range script {
 		if !runStage(stage) {
 			// TODO alert failure

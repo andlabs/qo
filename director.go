@@ -23,9 +23,11 @@ func (s Stage) Swap(i, j int) {
 }
 
 var script []Stage
+var nStages int
 
 func buildScript() {
 	script = nil
+	nStages = 0
 
 	// stage 1: make the object file directory
 	e := &Executor{
@@ -33,6 +35,7 @@ func buildScript() {
 		Line:		[]string{"mkdir", "-p", ".qoobj"},
 	}
 	script = append(script, Stage{e})
+	nStages++
 
 	// stage 2: compile everything
 	stage2 := Stage(nil)
@@ -51,6 +54,7 @@ func buildScript() {
 	sort.Sort(stage2)
 	sort.Strings(objects)
 	script = append(script, stage2)
+	nStages += len(stage2)
 
 	// 3) link
 	e = &Executor{
@@ -60,4 +64,5 @@ func buildScript() {
 	e.Line = append(e.Line, "gcc", "-o", targetName())
 	e.Line = append(e.Line, objects...)
 	script = append(script, Stage{e})
+	nStages++
 }
