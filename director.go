@@ -57,11 +57,12 @@ func buildScript() {
 	nStages += len(stage2)
 
 	// 3) link
+	target := targetName()
 	e = &Executor{
-		Name:	"Linked",
+		Name:	"Linked " + target,
 		Line:		make([]string, 0, len(objects) + 10),
 	}
-	e.Line = append(e.Line, "gcc", "-o", targetName())
+	e.Line = append(e.Line, "gcc", "-o", target)
 	e.Line = append(e.Line, objects...)
 	script = append(script, Stage{e})
 	nStages++

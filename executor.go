@@ -11,23 +11,19 @@ import (
 type Executor struct {
 	Name	string
 	Line		[]string
-	Stdout	*bytes.Buffer
-	Stderr	*bytes.Buffer
+	Output	*bytes.Buffer
 	Error		error
 }
 
 func (e *Executor) Do() {
 	cmd := exec.Command(e.Line[0], e.Line[1:]...)
 	cmd.Env = os.Environ()
-	e.Stdout = new(bytes.Buffer)
-	cmd.Stdout = e.Stdout
-	e.Stderr = new(bytes.Buffer)
-	cmd.Stderr = e.Stderr
+	e.Output = new(bytes.Buffer)
+	cmd.Stdout = e.Output
+	cmd.Stderr = e.Output
 	e.Error = cmd.Run()
 	builder <- e
 }
-
-var builder = make(chan *Executor)
 
 /*
 func main() {
