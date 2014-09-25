@@ -51,12 +51,14 @@ func buildScript() {
 	// stage 2: compile everything
 	stage2 := Stage(nil)
 	objects := []string(nil)
+	linker := toolchain.LD
 	for _, f := range cfiles {
 		e, object := makeCompileStep(f, toolchain.CC, toolchain.CFLAGS)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}
 	for _, f := range cppfiles {
+		linker = toolchain.LDCXX		// run only if cppfiles isn't empty
 		e, object := makeCompileStep(f, toolchain.CXX, toolchain.CXXFLAGS)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
@@ -72,7 +74,7 @@ func buildScript() {
 		Name:	"Linked " + target,
 		Line:		make([]string, 0, len(objects) + len(toolchain.LDFLAGS) + 10),
 	}
-	e.Line = append(e.Line, toolchain.LD, "-o", target)
+	e.Line = append(e.Line, linker, "-o", target)
 	e.Line = append(e.Line, objects...)
 	e.Line = append(e.Line, toolchain.LDFLAGS...)
 	script = append(script, Stage{e})

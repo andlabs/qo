@@ -12,8 +12,9 @@ type Toolchain struct {
 	CC			string
 	CXX			string
 	LD			string
+	LDCXX		string
 	CFLAGS		[]string
-	CXXFLAGS		[]string
+	CXXFLAGS	[]string
 	LDFLAGS		[]string
 	LDCXXFLAGS	[]string	// appended to LDFLAGS if at least one C++ file is present
 	IsGCC		bool		// for the flag compiler
@@ -43,12 +44,14 @@ func init() {
 		CC:			"gcc",
 		CXX:			"g++",
 		LD:			"gcc",
+		LDCXX:		"g++",
 		IsGCC:		true,
 	}
 	toolchains["clang"] = &Toolchain{
 		CC:			"clang",
 		CXX:			"clang++",
 		LD:			"clang",
+		LDCXX:		"clang++",
 		IsGCC:		true,
 	}
 	// TODO: MinGW cross-compiling, MSVC, Plan 9 compilers
