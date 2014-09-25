@@ -60,10 +60,11 @@ func buildScript() {
 	target := targetName()
 	e = &Executor{
 		Name:	"Linked " + target,
-		Line:		make([]string, 0, len(objects) + 10),
+		Line:		make([]string, 0, len(objects) + len(toolchain.LDFLAGS) + 10),
 	}
 	e.Line = append(e.Line, "gcc", "-o", target)
 	e.Line = append(e.Line, objects...)
+	e.Line = append(e.Line, toolchain.LDFLAGS...)
 	script = append(script, Stage{e})
 	nStages++
 }
