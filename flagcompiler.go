@@ -94,4 +94,7 @@ func compileFlags() {
 	for _, f := range cppfiles {
 		parseFile(f)
 	}
+	for _, f := range hfiles {
+		parseFile(f)
+	}
 }
