@@ -25,6 +25,17 @@ func (s Stage) Swap(i, j int) {
 var script []Stage
 var nStages int
 
+func makeCompileStep(f string, cc string, flags []string) (*Executor, string) {
+	object := strings.Replace(f, string(filepath.Separator), "_", -1) + ".o"
+	object = filepath.Join(".qoobj", object)
+	e := &Executor{
+		Name:	"Compiled " + f,
+		Line:		[]string{cc, f, "-c", "-o", object},
+	}
+	e.Line = append(e.Line, flags...)
+	return e, object
+}
+
 func buildScript() {
 	script = nil
 	nStages = 0
@@ -41,13 +52,12 @@ func buildScript() {
 	stage2 := Stage(nil)
 	objects := []string(nil)
 	for _, f := range cfiles {
-		object := strings.Replace(f, string(filepath.Separator), "_", -1) + ".o"
-		object = filepath.Join(".qoobj", object)
-		e = &Executor{
-			Name:	"Compiled " + f,
-			Line:		[]string{toolchain.CC, f, "-c", "-o", object},
-		}
-		e.Line = append(e.Line, toolchain.CFLAGS...)
+		e, object := makeCompileStep(f, toolchain.CC, toolchain.CFLAGS)
+		stage2 = append(stage2, e)
+		objects = append(objects, object)
+	}
+	for _, f := range cppfiles {
+		e, object := makeCompileStep(f, toolchain.CPP, toolchain.CPPFLAGS)
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}
