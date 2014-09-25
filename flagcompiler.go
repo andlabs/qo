@@ -7,11 +7,23 @@ import (
 	"os"
 	"strings"
 	"bufio"
+	"os/exec"
 )
 
 var debug = flag.Bool("g", false, "build with debug symbols")
 
 var toolchain Toolchain
+
+func pkgconfig(which string, pkgs []string) []string {
+	cmd := exec.Command("pkg-config", append([]string{which}, pkgs...)...)
+	cmd.Stderr = os.Stderr
+	output, err := cmd.Output()
+	if err != nil {
+		// TODO
+		panic(err)
+	}
+	return strings.Fields(string(output))
+}
 
 func parseFile(filename string) {
 	f, err := os.Open(filename)
@@ -37,7 +49,11 @@ func parseFile(filename string) {
 		case "LDFLAGS:":
 			toolchain.LDFLAGS = append(toolchain.LDFLAGS, parts[1:]...)
 		case "pkg-config:":
-			// TODO
+			cflags := pkgconfig("--cflags", parts[1:])
+			libs := pkgconfig("--libs", parts[1:])
+			toolchain.CFLAGS = append(toolchain.CFLAGS, cflags...)
+			toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, cflags...)
+			toolchain.LDFLAGS = append(toolchain.LDFLAGS, libs...)
 		default:
 			// TODO
 			panic("invalid line")
