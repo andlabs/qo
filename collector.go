@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"path/filepath"
@@ -48,19 +47,4 @@ func walker(path string, info os.FileInfo, err error) error {
 		consider(&mmfiles, path)
 	}
 	return nil
-}
-
-func main() {
-//	flags.Parse()
-	err := filepath.Walk(".", walker)
-	if err != nil {
-		panic(err)
-	}
-	compileFlags()
-	buildScript()
-	for _, s := range script {
-		for _, e := range *s {
-			fmt.Printf("%#v\n", e)
-		}
-	}
 }
