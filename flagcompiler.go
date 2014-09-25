@@ -3,9 +3,12 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"strings"
 )
+
+var debug = flag.Bool("g", false, "build with debug symbols")
 
 var toolchain Toolchain
 
@@ -20,6 +23,7 @@ func compileFlags() {
 	// copy the initial values
 	toolchain = *(toolchains[*selectedToolchain])
 
+	// TODO move this to toolchain.go because bleh
 	if toolchain.IsGCC {
 		toolchain.CFLAGS = append(toolchain.CFLAGS, gccbase.CFLAGS...)
 		toolchain.CFLAGS = append(toolchain.CFLAGS, gccarchflags[*targetArch])
@@ -27,6 +31,8 @@ func compileFlags() {
 		toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, gccarchflags[*targetArch])
 		toolchain.LDFLAGS = append(toolchain.LDFLAGS, gccbase.LDFLAGS...)
 		toolchain.LDFLAGS = append(toolchain.LDFLAGS, gccarchflags[*targetArch])
+		toolchain.CDEBUG = append(toolchain.CDEBUG, gccbase.CDEBUG...)
+		toolchain.LDDEBUG = append(toolchain.LDDEBUG, gccbase.LDDEBUG...)
 	}
 
 	toolchain.CFLAGS = append(toolchain.CFLAGS, strings.Fields(os.Getenv("CFLAGS"))...)
@@ -34,4 +40,10 @@ func compileFlags() {
 	toolchain.LDFLAGS = append(toolchain.LDFLAGS, strings.Fields(os.Getenv("LDFLAGS"))...)
 
 	// TODO read each file and append flags
+
+	if *debug {
+		toolchain.CFLAGS = append(toolchain.CFLAGS, toolchain.CDEBUG...)
+		toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, toolchain.CDEBUG...)
+		toolchain.LDFLAGS = append(toolchain.LDFLAGS, toolchain.LDDEBUG...)
+	}
 }

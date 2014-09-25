@@ -18,6 +18,8 @@ type Toolchain struct {
 	LDFLAGS		[]string
 	LDCXXFLAGS	[]string	// appended to LDFLAGS if at least one C++ file is present
 	IsGCC		bool		// for the flag compiler
+	CDEBUG		[]string	// appended to CFLAGS *and* CXXFLAGS
+	LDDEBUG		[]string
 }
 
 var toolchains = make(map[string]*Toolchain)
@@ -29,6 +31,8 @@ var gccbase = &Toolchain{
 	CFLAGS:		[]string{"--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter"},
 	CXXFLAGS:	[]string{"--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter"},
 	LDFLAGS:		nil,
+	CDEBUG:		[]string{"-g"},
+	LDDEBUG:		[]string{"-g"},
 }
 
 var gccarchflags = map[string]string{
