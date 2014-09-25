@@ -10,6 +10,10 @@ import (
 
 func main() {
 	flag.Parse()
+	if *selectedToolchain == "list" {
+		listToolchains()
+		os.Exit(0)
+	}
 	err := filepath.Walk(".", walker)
 	if err != nil {
 		panic(err)

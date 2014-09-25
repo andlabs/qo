@@ -10,8 +10,8 @@ import (
 )
 
 // TODO list
-var targetOS = flag.String("os", runtime.GOOS, "target OS")
-var targetArch = flag.String("arch", runtime.GOARCH, "target architecture")
+var targetOS = flag.String("os", runtime.GOOS, "select target OS")
+var targetArch = flag.String("arch", runtime.GOARCH, "select target architecture")
 
 func targetName() string {
 	pwd, err := os.Getwd()

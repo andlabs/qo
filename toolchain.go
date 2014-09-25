@@ -3,7 +3,9 @@
 package main
 
 import (
+	"fmt"
 	"flag"
+	"sort"
 )
 
 type Toolchain struct {
@@ -54,3 +56,14 @@ func init() {
 }
 
 var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
+
+func listToolchains() {
+	tc := make([]string, 0, len(toolchains))
+	for k := range toolchains {
+		tc = append(tc, k)
+	}
+	sort.Strings(tc)
+	for _, t := range tc {
+		fmt.Printf("%s\n", t)
+	}
+}
