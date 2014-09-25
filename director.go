@@ -57,7 +57,7 @@ func buildScript() {
 		Name:	"Linked",
 		Line:		make([]string, 0, len(objects) + 10),
 	}
-	e.Line = append(e.Line, "gcc", "-o", "a.out")
+	e.Line = append(e.Line, "gcc", "-o", targetName())
 	e.Line = append(e.Line, objects...)
 	script = append(script, &Stage{e})
 }
