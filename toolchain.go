@@ -76,7 +76,22 @@ func init() {
 		LDCXX:		"clang++",
 	}
 	gcc(toolchains["clang"])
-	// TODO: MinGW cross-compiling, MSVC, Plan 9 compilers
+	// TOOD merge this with -arch
+	toolchains["mingwcc32"] = &Toolchain{
+		CC:			"i686-w64-mingw32-gcc",
+		CXX:			"i686-w64-mingw32-g++",
+		LD:			"i686-w64-mingw32-gcc",
+		LDCXX:		"i686-w64-mingw32-g++",
+	}
+	gcc(toolchains["mingwcc32"])
+	toolchains["mingwcc64"] = &Toolchain{
+		CC:			"x86_64-w64-mingw32-gcc",
+		CXX:			"x86_64-w64-mingw32-g++",
+		LD:			"x86_64-w64-mingw32-gcc",
+		LDCXX:		"x86_64-w64-mingw32-g++",
+	}
+	gcc(toolchains["mingwcc64"])
+	// TODO: MSVC, Plan 9 compilers
 }
 
 var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
