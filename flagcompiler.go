@@ -74,7 +74,7 @@ func compileFlags() {
 	}
 
 	// copy the initial values
-	toolchain = *(toolchains[*selectedToolchain])
+	toolchain = *(toolchains[*selectedToolchain][*targetArch])
 
 	toolchain.CFLAGS = append(toolchain.CFLAGS, strings.Fields(os.Getenv("CFLAGS"))...)
 	toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, strings.Fields(os.Getenv("CXXFLAGS"))...)

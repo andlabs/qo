@@ -23,75 +23,65 @@ type Toolchain struct {
 	LDOUTPUT	[]string
 }
 
-var toolchains = make(map[string]*Toolchain)
+// toolchains[name][arch]
+var toolchains = make(map[string]map[string]*Toolchain)
 
 // values for CFLAGS/CXXFLAGS/LDFLAGS shared by all gcc and clang variants
+// this is a function so the backing array of each slice is new each time (safe for append)
 // specify -c here to keep things clean
 // we specify -Wno-unused-parameter for the case where we are defining an interface and are not using some parameter
 // I refuse to support C11.
-var gccbase = &Toolchain{
-	CFLAGS:		[]string{"-c", "--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter"},
-	CXXFLAGS:	[]string{"-c", "--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter"},
-	LDFLAGS:		nil,
-	CDEBUG:		[]string{"-g"},
-	LDDEBUG:		[]string{"-g"},
-	COUTPUT:		[]string{"-o"},
-	LDOUTPUT:	[]string{"-o"},
-}
-
-var gccarchflags = map[string]string{
-	"386":		"-m32",
-	"amd64":		"-m64",
+func gcc1(exe *Toolchain, archflag string) *Toolchain {
+	return &Toolchain{
+		CC:			exe.CC,
+		CXX:			exe.CXX,
+		LD:			exe.LD,
+		LDCXX:		exe.LDCXX,
+		CFLAGS:		[]string{"-c", "--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter", archflag},
+		CXXFLAGS:	[]string{"-c", "--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter", archflag},
+		LDFLAGS:		[]string{archflag},
+		CDEBUG:		[]string{"-g"},
+		LDDEBUG:		[]string{"-g"},
+		COUTPUT:		[]string{"-o"},
+		LDOUTPUT:	[]string{"-o"},
+	}
 }
 
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
-// - simplify the below
 
-// TODO bad for init()
-func gcc(t *Toolchain) {
-	t.CFLAGS = append(t.CFLAGS, gccbase.CFLAGS...)
-	t.CFLAGS = append(t.CFLAGS, gccarchflags[*targetArch])
-	t.CXXFLAGS = append(t.CXXFLAGS, gccbase.CXXFLAGS...)
-	t.CXXFLAGS = append(t.CXXFLAGS, gccarchflags[*targetArch])
-	t.LDFLAGS = append(t.LDFLAGS, gccbase.LDFLAGS...)
-	t.LDFLAGS = append(t.LDFLAGS, gccarchflags[*targetArch])
-	t.CDEBUG = append(t.CDEBUG, gccbase.CDEBUG...)
-	t.LDDEBUG = append(t.LDDEBUG, gccbase.LDDEBUG...)
-	t.COUTPUT = append(t.COUTPUT, gccbase.COUTPUT...)
-	t.LDOUTPUT = append(t.LDOUTPUT, gccbase.LDOUTPUT...)
+func gcc(exe *Toolchain) map[string]*Toolchain {
+	m := make(map[string]*Toolchain)
+	m["386"] = gcc1(exe, "-m32")
+	m["amd64"] = gcc1(exe, "-m64")
+	return m
 }
 
 func init() {
-	toolchains["gcc"] = &Toolchain{
+	toolchains["gcc"] = gcc(&Toolchain{
 		CC:			"gcc",
 		CXX:			"g++",
 		LD:			"gcc",
 		LDCXX:		"g++",
-	}
-	gcc(toolchains["gcc"])
-	toolchains["clang"] = &Toolchain{
+	})
+	toolchains["clang"] = gcc(&Toolchain{
 		CC:			"clang",
 		CXX:			"clang++",
 		LD:			"clang",
 		LDCXX:		"clang++",
-	}
-	gcc(toolchains["clang"])
-	// TOOD merge this with -arch
-	toolchains["mingwcc32"] = &Toolchain{
+	})
+	toolchains["mingwcc"] = gcc(&Toolchain{
 		CC:			"i686-w64-mingw32-gcc",
 		CXX:			"i686-w64-mingw32-g++",
 		LD:			"i686-w64-mingw32-gcc",
 		LDCXX:		"i686-w64-mingw32-g++",
-	}
-	gcc(toolchains["mingwcc32"])
-	toolchains["mingwcc64"] = &Toolchain{
-		CC:			"x86_64-w64-mingw32-gcc",
-		CXX:			"x86_64-w64-mingw32-g++",
-		LD:			"x86_64-w64-mingw32-gcc",
-		LDCXX:		"x86_64-w64-mingw32-g++",
-	}
-	gcc(toolchains["mingwcc64"])
+	})
+	// patch up the amd64 mingw cross compiler to use the correct executable names
+	mingw64 := toolchains["mingwcc"]["amd64"]
+	mingw64.CC = "x86_64-w64-mingw32-gcc"
+	mingw64.CXX = "x86_64-w64-mingw32-g++"
+	mingw64.LD = "x86_64-w64-mingw32-gcc"
+	mingw64.LDCXX = "x86_64-w64-mingw32-g++"
 	// TODO: MSVC, Plan 9 compilers
 }
 
@@ -99,7 +89,7 @@ var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a ful
 
 func listToolchains() {
 	tc := make([]string, 0, len(toolchains))
-	for k := range toolchains {
+	for k, _ := range toolchains {
 		tc = append(tc, k)
 	}
 	sort.Strings(tc)
