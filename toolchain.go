@@ -48,6 +48,7 @@ var gccarchflags = map[string]string{
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
 // - simplify the below
 
+// TODO bad for init()
 func gcc(t *Toolchain) {
 	t.CFLAGS = append(t.CFLAGS, gccbase.CFLAGS...)
 	t.CFLAGS = append(t.CFLAGS, gccarchflags[*targetArch])
