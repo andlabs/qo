@@ -92,7 +92,29 @@ func init() {
 	mingw64.LD = "x86_64-w64-mingw32-gcc"
 	mingw64.LDCXX = "x86_64-w64-mingw32-g++"
 	mingw64.RC = "x86_64-w64-mingw32-windres"
-	// TODO: MSVC, Plan 9 compilers
+
+	toolchain["msvc"]["UNFINISHED"] = &Toolchain{
+		CC:			"cl",
+		CXX:			"cl",
+		LD:			"link",
+		LDCXX:		"link",
+		RC:			"rc",
+		// TODO /bigobj?
+		CFLAGS:		[]string{"/c", "/analyze", "/nologo", "/RTC1", "/RTCc", "/RTCs", "/RTCu", "/sdl", "/TC", "/Wall", "/Wp64"},
+		CXXFLAGS:	[]string{"/c", "/analyze", "/nologo", "/RTC1", "/RTCc", "/RTCs", "/RTCu", "/sdl", "/TP", "/Wall", "/Wp64"},
+		// TODO keep /largeaddressaware?
+		LDFLAGS:		[]string{"/largeaddressaware", "/nologo"},
+		CDEBUG:		[]string{"/Z7"},		// embedded debug information
+		LDDEBUG:		nil,				// TODO MSDN claims it's not possible to have embedded debug symbols (apparently COFF doesn't exist)
+		COUTPUT:		[]string{"/Fo"},		// TODO is one argument
+		LDOUTPUT:	[]string{"/OUT:"},	// TODO is one argument
+		LIBPREFIX:	"",
+		LIBSUFFIX:	".lib",
+		// TODO resource compiling is a two-step process:
+		// 1) rc /fo file.res file.rc
+		// 2) invoke cvtres (TODO how?)
+	}
+	// TODO: Plan 9 compilers
 }
 
 var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
