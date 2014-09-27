@@ -20,6 +20,11 @@ func main() {
 	}
 	compileFlags()
 	buildScript()
+	err = os.MkdirAll(".qoobj", 0644)
+	if err != nil {
+		// TODO
+		panic(err)
+	}
 	run()
 	os.Exit(0)		// success
 }

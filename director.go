@@ -42,15 +42,8 @@ func buildScript() {
 	script = nil
 	nStages = 0
 
-	// stage 1: make the object file directory
-	e := &Executor{
-		Name:	"Made working directory",
-		Line:		[]string{"mkdir", "-p", ".qoobj"},
-	}
-	script = append(script, Stage{e})
-	nStages++
-
-	// stage 2: compile everything
+	// stage 1: compile everything
+	// TODO fix up variable names
 	stage2 := Stage(nil)
 	objects := []string(nil)
 	linker := toolchain.LD
@@ -85,7 +78,7 @@ func buildScript() {
 	script = append(script, stage2)
 	nStages += len(stage2)
 
-	// 3) cvtres (msvc)
+	// stage 2: cvtres (msvc)
 	stage3 := Stage(nil)
 	if len(resfiles) != 0 {
 		for _, f := range rcfiles {
@@ -99,9 +92,9 @@ func buildScript() {
 		nStages += len(stage3)
 	}
 
-	// 4) link
+	// stage 3: link
 	target := targetName()
-	e = &Executor{
+	e := &Executor{
 		Name:	"Linked " + target,
 		Line:		make([]string, 0, len(objects) + len(toolchain.LDFLAGS) + 10),
 	}
