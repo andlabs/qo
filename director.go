@@ -93,16 +93,7 @@ func buildScript() {
 	}
 
 	// stage 3: link
-	target := targetName()
-	e := &Executor{
-		Name:	"Linked " + target,
-		Line:		make([]string, 0, len(objects) + len(toolchain.LDFLAGS) + 10),
-	}
-	e.Line = append(e.Line, linker)
-	e.Line = append(e.Line, objects...)
-	e.Line = append(e.Line, toolchain.LDFLAGS...)
-	e.Line = append(e.Line, toolchain.LDOUTPUT...)
-	e.Line = append(e.Line, target)
+	e := toolchain.Link(TODO)
 	script = append(script, Stage{e})
 	nStages++
 }

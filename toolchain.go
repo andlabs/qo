@@ -8,55 +8,17 @@ import (
 	"sort"
 )
 
-type Toolchain struct {
-	CC				string
-	CXX				string
-	LD				string
-	LDCXX			string
-	RC				string
-	CVTRES			string
-	CFLAGS			[]string
-	CXXFLAGS		[]string
-	LDFLAGS			[]string
-	LDCXXFLAGS		[]string	// appended to LDFLAGS if at least one C++ file is present
-	RCFLAGS			[]string
-	CVTRESFLAGS		[]string
-	CDEBUG			[]string	// appended to CFLAGS *and* CXXFLAGS
-	LDDEBUG			[]string
-	COUTPUT			[]string	// prepended to output filename on both CFLAGS *and CXXFLAGS
-	LDOUTPUT		[]string	// if the last string is not "", the output filename is appended to the previous string
-	RCOUTPUT		[]string
-	CVTRESOUTPUT	[]string
-	LIBPREFIX			string	// for #qo LIBS: ...
-	LIBSUFFIX			string
-}
+type Toolchain interface {
+	BuildCFile(filename string, cflags []string) (stages []Stage, object string)
+	BuildCXXFile(filename string, cflags []string) (stages []Stage, object string)
+//	BuildMFile(filename string, cflags []string) (stages []Stage, object string)
+//	BuildMMFile(filename string, cflags []string) (stages []Stage, object string)
+	BuildRCFile(filename string, cflags []string) (stages []Stage, object string)
+	Link(objects []string, ldflags []string, libs []string) *Executor
+)
 
 // toolchains[name][arch]
-var toolchains = make(map[string]map[string]*Toolchain)
-
-// values for CFLAGS/CXXFLAGS/LDFLAGS shared by all gcc and clang variants
-// this is a function so the backing array of each slice is new each time (safe for append)
-// specify -c here to keep things clean
-// we specify -Wno-unused-parameter for the case where we are defining an interface and are not using some parameter
-// I refuse to support C11.
-func gcc1(exe *Toolchain, archflag string) *Toolchain {
-	return &Toolchain{
-		CC:			exe.CC,
-		CXX:			exe.CXX,
-		LD:			exe.LD,
-		LDCXX:		exe.LDCXX,
-		RC:			exe.RC,
-		CFLAGS:		[]string{"-c", "--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter", archflag},
-		CXXFLAGS:	[]string{"-c", "--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter", archflag},
-		LDFLAGS:		[]string{archflag},
-		CDEBUG:		[]string{"-g"},
-		LDDEBUG:		[]string{"-g"},
-		COUTPUT:		[]string{"-o", ""},
-		LDOUTPUT:	[]string{"-o", ""},
-		LIBPREFIX:	"-l",
-		LIBSUFFIX:	"",
-	}
-}
+var toolchains = make(map[string]map[string]Toolchain)
 
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
