@@ -54,6 +54,10 @@ func parseFile(filename string) {
 			toolchain.CFLAGS = append(toolchain.CFLAGS, cflags...)
 			toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, cflags...)
 			toolchain.LDFLAGS = append(toolchain.LDFLAGS, libs...)
+		case "LIBS:":
+			for i := 1; i < len(parts); i++ {
+				toolchain.LDFLAGS = append(toolchain.LDFLAGS, toolchain.LIBPREFIX + parts[i] + toolchain.LIBSUFFIX)
+			}
 		default:
 			// TODO
 			panic("invalid line")

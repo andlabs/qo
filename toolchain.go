@@ -22,6 +22,8 @@ type Toolchain struct {
 	LDDEBUG		[]string
 	COUTPUT		[]string	// prepended to output filename on both CFLAGS *and CXXFLAGS
 	LDOUTPUT	[]string
+	LIBPREFIX		string	// for #qo LIBS: ...
+	LIBSUFFIX		string
 }
 
 // toolchains[name][arch]
@@ -46,6 +48,8 @@ func gcc1(exe *Toolchain, archflag string) *Toolchain {
 		LDDEBUG:		[]string{"-g"},
 		COUTPUT:		[]string{"-o"},
 		LDOUTPUT:	[]string{"-o"},
+		LIBPREFIX:	"-l",
+		LIBSUFFIX:	"",
 	}
 }
 

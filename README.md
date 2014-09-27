@@ -44,6 +44,8 @@ LDFLAGS
 	just like the environment variables
 pkg-config
 	passes named packages to pkg-config and adds the results to CFLAGS, CXXFLAGS, and LDFLAGS
+LIBS
+	adds named libraries to LDFLAGS. Intended to make cross-compiling with MinGW and MSVC easier; for instance, LIBS: user32 will do -luser32 on MinGW and user32.lib on MSVC
 ```
 
 Debug builds are simple: just pass `-g` to `qo`.
