@@ -15,7 +15,7 @@ type Toolchain interface {
 //	BuildMMFile(filename string, cflags []string) (stages []Stage, object string)
 	BuildRCFile(filename string, cflags []string) (stages []Stage, object string)
 	Link(objects []string, ldflags []string, libs []string) *Executor
-)
+}
 
 // toolchains[name][arch]
 var toolchains = make(map[string]map[string]Toolchain)

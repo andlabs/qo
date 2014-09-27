@@ -42,7 +42,6 @@ func buildScript() {
 		objects = append(objects, obj)
 	}
 	// TODO .m, .mm files
-	resfiles := make([]string, 0, len(rcfiles))
 	for _, f := range rcfiles {
 		s, obj := toolchain.BuildRCFile(f, nil)
 		stage1 = append(stage1, s[0]...)

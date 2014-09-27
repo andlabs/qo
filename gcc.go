@@ -15,7 +15,7 @@ type GCC struct {
 	ArchFlag	string
 }
 
-func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename string) (stages Stage, object string) {
+func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
 	line := append([]string{
 		cc,
@@ -27,7 +27,7 @@ func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename 
 		// for the case where we are implementing an interface and are not using some parameter
 		"-Wno-unused-parameter",
 		g.ArchFlag,
-	}, cflags)
+	}, cflags...)
 	if *debug {
 		line = append(line, "-g")
 	}
@@ -39,7 +39,7 @@ func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename 
 	stages = []Stage{
 		nil,
 		Stage{e},
-		nil
+		nil,
 	}
 	return stages, object
 }
@@ -63,13 +63,13 @@ func (g *GCC) BuildCXXFile(filename string, cflags []string) (stages []Stage, ob
 
 // TODO .m, .mm
 
-func (g *GCC) BuildRCFile(filename string, cflags []string) (stages Stage, object string) {
+func (g *GCC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
 	line := append([]string{
 		g.RC,
 		filename,
 		object,
-	}, cflags)
+	}, cflags...)
 	e := &Executor{
 		Name:	"Compiled " + filename,
 		Line:		line,
@@ -77,7 +77,7 @@ func (g *GCC) BuildRCFile(filename string, cflags []string) (stages Stage, objec
 	stages = []Stage{
 		nil,
 		Stage{e},
-		nil
+		nil,
 	}
 	return stages, object
 }
