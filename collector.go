@@ -13,6 +13,7 @@ var cppfiles []string
 var hfiles []string
 var mfiles []string
 var mmfiles []string
+var rcfiles []string
 
 var base string
 
@@ -45,6 +46,8 @@ func walker(path string, info os.FileInfo, err error) error {
 		consider(&mfiles, path)
 	case ".mm":
 		consider(&mmfiles, path)
+	case ".rc":
+		consider(&rcfiles, path)
 	}
 	return nil
 }

@@ -13,6 +13,7 @@ type Toolchain struct {
 	CXX			string
 	LD			string
 	LDCXX		string
+	RC			string
 	CFLAGS		[]string
 	CXXFLAGS	[]string
 	LDFLAGS		[]string
@@ -37,6 +38,7 @@ func gcc1(exe *Toolchain, archflag string) *Toolchain {
 		CXX:			exe.CXX,
 		LD:			exe.LD,
 		LDCXX:		exe.LDCXX,
+		RC:			exe.RC,
 		CFLAGS:		[]string{"-c", "--std=c99", "-Wall", "-Wextra", "-Wno-unused-parameter", archflag},
 		CXXFLAGS:	[]string{"-c", "--std=c++11", "-Wall", "-Wextra", "-Wno-unused-parameter", archflag},
 		LDFLAGS:		[]string{archflag},
@@ -63,18 +65,21 @@ func init() {
 		CXX:			"g++",
 		LD:			"gcc",
 		LDCXX:		"g++",
+		RC:			"windres",
 	})
 	toolchains["clang"] = gcc(&Toolchain{
 		CC:			"clang",
 		CXX:			"clang++",
 		LD:			"clang",
 		LDCXX:		"clang++",
+		// TODO rc
 	})
 	toolchains["mingwcc"] = gcc(&Toolchain{
 		CC:			"i686-w64-mingw32-gcc",
 		CXX:			"i686-w64-mingw32-g++",
 		LD:			"i686-w64-mingw32-gcc",
 		LDCXX:		"i686-w64-mingw32-g++",
+		RC:			"i686-w64-mingw32-windres",
 	})
 	// patch up the amd64 mingw cross compiler to use the correct executable names
 	mingw64 := toolchains["mingwcc"]["amd64"]
@@ -82,6 +87,7 @@ func init() {
 	mingw64.CXX = "x86_64-w64-mingw32-g++"
 	mingw64.LD = "x86_64-w64-mingw32-gcc"
 	mingw64.LDCXX = "x86_64-w64-mingw32-g++"
+	mingw64.RC = "x86_64-w64-mingw32-windres"
 	// TODO: MSVC, Plan 9 compilers
 }
 

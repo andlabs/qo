@@ -65,6 +65,13 @@ func buildScript() {
 		stage2 = append(stage2, e)
 		objects = append(objects, object)
 	}
+	// TODO .m, .mm files
+	for _, f := range rcfiles {
+		// rc compiler invocation is always rc input.rc output.o until otherwise stated
+		e, object := makeCompileStep(f, toolchain.RC, nil, nil)
+		stage2 = append(stage2, e)
+		objects = append(objects, object)
+	}
 	sort.Sort(stage2)
 	sort.Strings(objects)
 	script = append(script, stage2)
