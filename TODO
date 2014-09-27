@@ -1,3 +1,4 @@
 - .exe suffix in windows builds
 - specify target type (exe, so/dll)
 - toolchain descriptions (for -tc list)
+- figure out what to do about assembly language
