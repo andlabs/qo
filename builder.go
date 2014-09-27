@@ -25,12 +25,12 @@ func runStage(s Stage) (success bool) {
 	for len(indices) != 0 {
 		e := <-builder
 		delete(indices, e)
+		fmt.Fprintf(os.Stderr, "%s", e.Output.Bytes())
+		// ensure only one newline
+		if e.Output.Len() == 0 || e.Output.Bytes()[e.Output.Len() - 1] != '\n' {
+			fmt.Fprintf(os.Stderr, "\n")
+		}
 		if e.Error != nil {
-			fmt.Fprintf(os.Stderr, "%s", e.Output.Bytes())
-			// ensure only one newline
-			if e.Output.Len() == 0 || e.Output.Bytes()[e.Output.Len() - 1] != '\n' {
-				fmt.Fprintf(os.Stderr, "\n")
-			}
 			fmt.Fprintf(os.Stderr, "[FAIL] Step %q failed with error: %v\n", e.Name, e.Error)
 			return false
 		}
