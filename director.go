@@ -93,7 +93,7 @@ func buildScript() {
 	}
 
 	// stage 3: link
-	e := toolchain.Link(TODO)
+	e := toolchain.Link(objects, ldflags, libs)
 	script = append(script, Stage{e})
 	nStages++
 }

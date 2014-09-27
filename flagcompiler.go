@@ -14,6 +14,11 @@ var debug = flag.Bool("g", false, "build with debug symbols")
 
 var toolchain Toolchain
 
+var cflags []string
+var cxxflags []string
+var ldflags []string
+var libs []string
+
 func pkgconfig(which string, pkgs []string) []string {
 	cmd := exec.Command("pkg-config", append([]string{which}, pkgs...)...)
 	cmd.Stderr = os.Stderr
@@ -43,20 +48,20 @@ func parseFile(filename string) {
 		parts := strings.Fields(line)
 		switch parts[0] {
 		case "CFLAGS:":
-			toolchain.CFLAGS = append(toolchain.CFLAGS, parts[1:]...)
+			cflags = append(cflags, parts[1:]...)
 		case "CXXFLAGS:":
-			toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, parts[1:]...)
+			cxxflags = append(cxxflags, parts[1:]...)
 		case "LDFLAGS:":
-			toolchain.LDFLAGS = append(toolchain.LDFLAGS, parts[1:]...)
+			ldflags = append(ldflags, parts[1:]...)
 		case "pkg-config:":
 			cflags := pkgconfig("--cflags", parts[1:])
 			libs := pkgconfig("--libs", parts[1:])
-			toolchain.CFLAGS = append(toolchain.CFLAGS, cflags...)
-			toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, cflags...)
-			toolchain.LDFLAGS = append(toolchain.LDFLAGS, libs...)
+			cflags = append(cflags, cflags...)
+			cxxflags = append(cxxflags, cflags...)
+			ldflags = append(ldflags, libs...)
 		case "LIBS:":
 			for i := 1; i < len(parts); i++ {
-				toolchain.LDFLAGS = append(toolchain.LDFLAGS, toolchain.LIBPREFIX + parts[i] + toolchain.LIBSUFFIX)
+				libs = append(libs, parts[i])
 			}
 		default:
 			// TODO
@@ -76,21 +81,11 @@ func compileFlags() {
 			*selectedToolchain = "clang"
 		}
 	}
+	toolchain = toolchains[*selectedToolchain][*targetArch]
 
-	// copy the initial values
-	toolchain = *(toolchains[*selectedToolchain][*targetArch])
-
-	toolchain.CFLAGS = append(toolchain.CFLAGS, strings.Fields(os.Getenv("CFLAGS"))...)
-	toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, strings.Fields(os.Getenv("CXXFLAGS"))...)
-	toolchain.LDFLAGS = append(toolchain.LDFLAGS, strings.Fields(os.Getenv("LDFLAGS"))...)
-
-	// TODO read each file and append flags
-
-	if *debug {
-		toolchain.CFLAGS = append(toolchain.CFLAGS, toolchain.CDEBUG...)
-		toolchain.CXXFLAGS = append(toolchain.CXXFLAGS, toolchain.CDEBUG...)
-		toolchain.LDFLAGS = append(toolchain.LDFLAGS, toolchain.LDDEBUG...)
-	}
+	cflags = append(cflags, strings.Fields(os.Getenv("CFLAGS"))...)
+	cxxflags = append(cxxflags, strings.Fields(os.Getenv("CXXFLAGS"))...)
+	ldflags = append(ldflags, strings.Fields(os.Getenv("LDFLAGS"))...)
 
 	for _, f := range cfiles {
 		parseFile(f)
