@@ -111,8 +111,8 @@ func init() {
 		LIBPREFIX:	"",
 		LIBSUFFIX:	".lib",
 		// TODO resource compiling is a two-step process:
-		// 1) rc /fo file.res file.rc
-		// 2) invoke cvtres (TODO how?)
+		// 1) rc /nologo /fo file.res file.rc
+		// 2) cvtres /nologo /out:file.o file.res
 	}
 	// TODO: Plan 9 compilers
 }
