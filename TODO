@@ -5,3 +5,4 @@
 - figure out how to change debug symbol format on Mac OS X and MSVC to one embedded in the binary (rather than .dSYM and .pdb files, respectively)
 - toolchain-specific pkg-configs
 - somehow figure out how to add -I (and others?) to rc
+- sdl-config? wx-config?
