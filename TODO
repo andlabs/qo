@@ -1,1 +1,3 @@
 - .exe suffix in windows builds
+- specify target type (exe, so/dll)
+- toolchain descriptions (for -tc list)

@@ -11,7 +11,23 @@ $ qo
 $ ./project
 ```
 
-There's no makefile or configure or cmake or whatever needed; it grabs what it needs directly from the source and header files. That being said, there are ways to customize the build: the $CFLAGS, $CXXFLAGS, and $LDFLAGS environment variables, some command-line options, and special directives in the source and header files. These directives are of the form
+There's no makefile or configure or cmake or whatever needed; it grabs what it needs directly from the source and header files. In fact, here's a list of all the files and their extensions (case insensitive) that qo knows about:
+
+* C files: `.c`
+* C++ files: `.cpp`, `.cxx`, `.c++`, `.cc`
+	* note the case-insensitive part; `.C` is recognized as C, not C++
+* C header files: `.h`, `.hpp`, `.hxx`, `.h++`, `.hh`
+* Objective-C files: `.m` (**not yet implemented**)
+* Objective-C++ files: `.mm` (**not yet implemented**)
+* Windows Resource files: `.rc`
+* TODO also need to add:
+	* gresource files: `.gresource`
+	* gettext files: `.po`
+	* Qt Designer files (?????)
+	* Qt Translator files (?????)
+	* anything else (send ideas!)
+
+That being said, there are ways to customize the build: the $CFLAGS, $CXXFLAGS, and $LDFLAGS environment variables, some command-line options, and special directives in the source and header files. These directives are of the form
 
 ```
 // #qo thing: arguments...
@@ -32,7 +48,9 @@ pkg-config
 
 Debug builds are simple: just pass `-g` to `qo`.
 
-Cross-compiling is also simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. (This may change.)
+Cross-compiling is also simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. (`-os` may change.)
+
+For MinGW, use the default `gcc` on Windows and `mingwcc` on other OSs if you have the correct cross-compiler toolchain set up.
 
 TODO conditional compilation via the filename, just like `go build`
 
