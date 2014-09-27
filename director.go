@@ -5,94 +5,65 @@ package main
 import (
 	"path/filepath"
 	"strings"
-	"sort"
 )
 
 type Stage []*Executor
 
-func (s Stage) Len() int {
-	return len(s)
-}
-
-func (s Stage) Less(i, j int) bool {
-	return s[i].Line[1] < s[j].Line[1]
-}
-
-func (s Stage) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
-
 var script []Stage
 var nStages int
 
-func makeCompileStep(f string, cc string, flags []string, outflag []string, suffix string) (*Executor, string) {
-	object := strings.Replace(f, string(filepath.Separator), "_", -1) + suffix
+func objectName(filename string, suffix string) string {
+	object := strings.Replace(filename, string(filepath.Separator), "_", -1) + suffix
 	object = filepath.Join(".qoobj", object)
-	e := &Executor{
-		Name:	"Compiled " + f,
-		Line:		[]string{cc, f},
-	}
-	e.Line = append(e.Line, flags...)
-	e.Line = append(e.Line, outflag...)
-	e.Line[len(e.Line) - 1] += object	// append to last flag for msvc
-	return e, object
+	return object
 }
 
 func buildScript() {
 	script = nil
 	nStages = 0
 
-	// stage 1: compile everything
-	// TODO fix up variable names
+	stage1 := Stage(nil)
 	stage2 := Stage(nil)
+	stage3 := Stage(nil)
 	objects := []string(nil)
-	linker := toolchain.LD
+
 	for _, f := range cfiles {
-		e, object := makeCompileStep(f, toolchain.CC, toolchain.CFLAGS, toolchain.COUTPUT, ".o")
-		stage2 = append(stage2, e)
-		objects = append(objects, object)
+		s, obj := toolchain.BuildCFile(f, cflags)
+		stage1 = append(stage1, s[0]...)
+		stage2 = append(stage2, s[1]...)
+		stage3 = append(stage3, s[2]...)
+		objects = append(objects, obj)
 	}
 	for _, f := range cppfiles {
-		linker = toolchain.LDCXX		// run only if cppfiles isn't empty
-		e, object := makeCompileStep(f, toolchain.CXX, toolchain.CXXFLAGS, toolchain.COUTPUT, ".o")
-		stage2 = append(stage2, e)
-		objects = append(objects, object)
+		s, obj := toolchain.BuildCXXFile(f, cflags)
+		stage1 = append(stage1, s[0]...)
+		stage2 = append(stage2, s[1]...)
+		stage3 = append(stage3, s[2]...)
+		objects = append(objects, obj)
 	}
 	// TODO .m, .mm files
 	resfiles := make([]string, 0, len(rcfiles))
 	for _, f := range rcfiles {
-		suffix := ".o"
-		if toolchain.CVTRES != "" {
-			suffix = ".res"
-		}
-		e, object := makeCompileStep(f, toolchain.RC, toolchain.RCFLAGS, toolchain.RCOUTPUT, suffix)
-		stage2 = append(stage2, e)
-		if toolchain.CVTRES != "" {
-			resfiles = append(resfiles, object)
-		} else {
-			objects = append(objects, object)
-		}
+		s, obj := toolchain.BuildRCFile(f, nil)
+		stage1 = append(stage1, s[0]...)
+		stage2 = append(stage2, s[1]...)
+		stage3 = append(stage3, s[2]...)
+		objects = append(objects, obj)
 	}
-	sort.Sort(stage2)
-	sort.Strings(objects)
-	script = append(script, stage2)
-	nStages += len(stage2)
 
-	// stage 2: cvtres (msvc)
-	stage3 := Stage(nil)
-	if len(resfiles) != 0 {
-		for _, f := range rcfiles {
-			e, object := makeCompileStep(f, toolchain.CVTRES, toolchain.CVTRESFLAGS, toolchain.CVTRESOUTPUT, ".o")
-			stage3 = append(stage3, e)
-			objects = append(objects, object)
-		}
-		sort.Sort(stage3)
-		sort.Strings(objects)
+	if len(stage1) > 0 {
+		script = append(script, stage1)
+		nStages += len(stage1)
+	}
+	if len(stage2) > 0 {
+		script = append(script, stage2)
+		nStages += len(stage2)
+	}
+	if len(stage3) > 0 {
 		script = append(script, stage3)
 		nStages += len(stage3)
 	}
 
-	// stage 3: link
 	e := toolchain.Link(objects, ldflags, libs)
 	script = append(script, Stage{e})
 	nStages++

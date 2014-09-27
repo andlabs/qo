@@ -16,9 +16,7 @@ type GCC struct {
 }
 
 func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename string) (stages Stage, object string) {
-	// TODO split out
-	object = strings.Replace(filename, string(filepath.Separator), "_", -1) + suffix
-	object = filepath.Join(".qoobj", object)
+	object = objectName(filename, ".o")
 	line := append([]string{
 		cc,
 		filename,
@@ -66,9 +64,7 @@ func (g *GCC) BuildCXXFile(filename string, cflags []string) (stages []Stage, ob
 // TODO .m, .mm
 
 func (g *GCC) BuildRCFile(filename string, cflags []string) (stages Stage, object string) {
-	// TODO split out
-	object = strings.Replace(filename, string(filepath.Separator), "_", -1) + suffix
-	object = filepath.Join(".qoobj", object)
+	object = objectName(filename, ".o")
 	line := append([]string{
 		g.RC,
 		filename,
