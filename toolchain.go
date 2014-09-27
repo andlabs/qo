@@ -20,39 +20,7 @@ type Toolchain interface {
 // toolchains[name][arch]
 var toolchains = make(map[string]map[string]Toolchain)
 
-/*
-TODO
-func init() {
-	toolchains["msvc"] = make(map[string]*Toolchain)
-	toolchains["msvc"]["386"] = &Toolchain{
-		CC:				"cl",
-		CXX:				"cl",
-		LD:				"link",
-		LDCXX:			"link",
-		RC:				"rc",
-		CVTRES:			"cvtres",
-		// TODO /bigobj?
-		CFLAGS:			[]string{"/c", "/analyze", "/nologo", "/RTC1", "/RTCc", "/RTCs", "/RTCu", "/sdl", "/TC", "/Wall", "/Wp64"},
-		CXXFLAGS:		[]string{"/c", "/analyze", "/nologo", "/RTC1", "/RTCc", "/RTCs", "/RTCu", "/sdl", "/TP", "/Wall", "/Wp64"},
-		// TODO keep /largeaddressaware?
-		LDFLAGS:			[]string{"/largeaddressaware", "/nologo"},
-		RCFLAGS:			[]string{"/nologo"},
-		CVTRESFLAGS:		[]string{"/nologo"},
-		CDEBUG:			[]string{"/Z7"},		// embedded debug information
-		LDDEBUG:			nil,				// TODO MSDN claims it's not possible to have embedded debug symbols (apparently COFF doesn't exist)
-		COUTPUT:			[]string{"/Fo"},
-		LDOUTPUT:		[]string{"/OUT:"},
-		RCOUTPUT:		[]string{"/fo", ""},
-		CVTRESOUTPUT:	[]string{"/out:"},
-		LIBPREFIX:		"",
-		LIBSUFFIX:		".lib",
-		// TODO resource compiling is a two-step process:
-		// 1) rc /nologo /fo file.res file.rc
-		// 2) cvtres /nologo /out:file.o file.res
-	}
-	// TODO: Plan 9 compilers
-}
-*/
+// TODO: Plan 9 compilers (plan9)
 
 var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
 
