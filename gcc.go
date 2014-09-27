@@ -62,6 +62,7 @@ func (g *GCC) BuildCXXFile(filename string, cflags []string) (stages []Stage, ob
 }
 
 // TODO .m, .mm
+// apart from needing -lobjc at link time, this is identical to C/C++; the --std flags are the same (thanks Beelsebob in irc.freenode.net/#macdev)
 
 func (g *GCC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
