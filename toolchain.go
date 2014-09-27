@@ -20,46 +20,9 @@ type Toolchain interface {
 // toolchains[name][arch]
 var toolchains = make(map[string]map[string]Toolchain)
 
-// TODO:
-// - MinGW static libgcc/libsjlj/libwinpthread/etc.
-
-func gcc(exe *Toolchain) map[string]*Toolchain {
-	m := make(map[string]*Toolchain)
-	m["386"] = gcc1(exe, "-m32")
-	m["amd64"] = gcc1(exe, "-m64")
-	return m
-}
-
+/*
+TODO
 func init() {
-	toolchains["gcc"] = gcc(&Toolchain{
-		CC:			"gcc",
-		CXX:			"g++",
-		LD:			"gcc",
-		LDCXX:		"g++",
-		RC:			"windres",
-	})
-	toolchains["clang"] = gcc(&Toolchain{
-		CC:			"clang",
-		CXX:			"clang++",
-		LD:			"clang",
-		LDCXX:		"clang++",
-		// TODO rc
-	})
-	toolchains["mingwcc"] = gcc(&Toolchain{
-		CC:			"i686-w64-mingw32-gcc",
-		CXX:			"i686-w64-mingw32-g++",
-		LD:			"i686-w64-mingw32-gcc",
-		LDCXX:		"i686-w64-mingw32-g++",
-		RC:			"i686-w64-mingw32-windres",
-	})
-	// patch up the amd64 mingw cross compiler to use the correct executable names
-	mingw64 := toolchains["mingwcc"]["amd64"]
-	mingw64.CC = "x86_64-w64-mingw32-gcc"
-	mingw64.CXX = "x86_64-w64-mingw32-g++"
-	mingw64.LD = "x86_64-w64-mingw32-gcc"
-	mingw64.LDCXX = "x86_64-w64-mingw32-g++"
-	mingw64.RC = "x86_64-w64-mingw32-windres"
-
 	toolchains["msvc"] = make(map[string]*Toolchain)
 	toolchains["msvc"]["386"] = &Toolchain{
 		CC:				"cl",
@@ -89,6 +52,7 @@ func init() {
 	}
 	// TODO: Plan 9 compilers
 }
+*/
 
 var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
 

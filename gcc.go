@@ -102,3 +102,60 @@ func (g *GCC) Link(objects []string, ldflags []string, libs []string) *Executor 
 		Line:		line,
 	}
 }
+
+// TODO:
+// - MinGW static libgcc/libsjlj/libwinpthread/etc.
+
+func init() {
+	toolchains["gcc"] = make(map[string]Toolchain)
+	toolchains["gcc"]["386"] = &GCC{
+		CC:			"gcc",
+		CXX:			"g++",
+		LD:			"gcc",
+		LDCXX:		"g++",
+		RC:			"windres",		// TODO arch flag?
+		ArchFlag:		"-m32",
+	}
+	toolchains["gcc"]["amd64"] = &GCC{
+		CC:			"gcc",
+		CXX:			"g++",
+		LD:			"gcc",
+		LDCXX:		"g++",
+		RC:			"windres",		// TODO arch flag?
+		ArchFlag:		"-m64",
+	}
+	toolchains["clang"] = make(map[string]Toolchain)
+	toolchains["clang"]["386"] = &GCC{
+		CC:			"clang",
+		CXX:			"clang++",
+		LD:			"clang",
+		LDCXX:		"clang++",
+		// TODO RC
+		ArchFlag:		"-m32",
+	}
+	toolchains["clang"]["amd64"] = &GCC{
+		CC:			"clang",
+		CXX:			"clang++",
+		LD:			"clang",
+		LDCXX:		"clang++",
+		// TODO RC
+		ArchFlag:		"-m64",
+	}
+	toolchains["mingwcc"] = make(map[string]Toolchain)
+	toolchains["mingwcc"]["386"] = &GCC{
+		CC:			"i686-w64-mingw32-gcc",
+		CXX:			"i686-w64-mingw32-g++",
+		LD:			"i686-w64-mingw32-gcc",
+		LDCXX:		"i686-w64-mingw32-g++",
+		RC:			"i686-w64-mingw32-windres",
+		ArchFlag:		"-m32",
+	}
+	toolchains["mingwcc"]["amd64"] = &GCC{
+		CC:			"x86_64-w64-mingw32-gcc",
+		CXX:			"x86_64-w64-mingw32-g++",
+		LD:			"x86_64-w64-mingw32-gcc",
+		LDCXX:		"x86_64-w64-mingw32-g++",
+		RC:			"x86_64-w64-mingw32-windres",
+		ArchFlag:		"-m64",
+	}
+}
