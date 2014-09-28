@@ -134,7 +134,7 @@ func init() {
 		CXX:			"g++",
 		LD:			"gcc",
 		LDCXX:		"g++",
-		RC:			"windres",		// TODO arch flag?
+		RC:			"windres",
 		ArchFlag:		"-m32",
 	}
 	toolchains["gcc"]["amd64"] = &GCC{
@@ -142,7 +142,7 @@ func init() {
 		CXX:			"g++",
 		LD:			"gcc",
 		LDCXX:		"g++",
-		RC:			"windres",		// TODO arch flag?
+		RC:			"windres",
 		ArchFlag:		"-m64",
 	}
 	toolchains["clang"] = make(map[string]Toolchain)
