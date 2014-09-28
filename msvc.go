@@ -8,6 +8,8 @@ import (
 
 type MSVC struct			{                                         }
 
+// TODO /MDd, /MTd
+
 func (m *MSVC) buildRegularFile(std string, cflags []string, filename string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
 	line := append([]string{
