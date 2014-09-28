@@ -57,13 +57,11 @@ func (m *MSVC) BuildCXXFile(filename string, cflags []string) (stages []Stage, o
 }
 
 func (m *MSVC) BuildMFile(filename string, cflags []string) (stages []Stage, object string) {
-	// TODO
-	panic("Objective-C unimplemented on MSVC")
+	fail("Objective-C unimplemented on MSVC")
 }
 
 func (m *MSVC) BuildMMFile(filename string, cflags []string) (stages []Stage, object string) {
-	// TODO
-	panic("Objective-C++ unimplemented on MSVC")
+	fail("Objective-C++ unimplemented on MSVC")
 }
 
 func (m *MSVC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
