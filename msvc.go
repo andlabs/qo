@@ -75,9 +75,10 @@ func (m *MSVC) BuildRCFile(filename string, cflags []string) (stages []Stage, ob
 	}
 	cvtline := append([]string{
 		"cvtres",
-		resfile,
+		// for cvtres, flags /must/ come first
 		"/nologo",
 		"/out:" + object,	// note: one parameter
+		resfile,
 	}, cflags...)
 	f := &Executor{
 		Name:	"Compiled object file from " + filename,
