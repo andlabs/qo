@@ -20,7 +20,11 @@ func targetName() string {
 		// TODO
 		panic(err)
 	}
-	return filepath.Base(pwd)
+	target := filepath.Base(pwd)
+	if *targetOS == "windows" {
+		target += ".exe"
+	}
+	return target
 }
 
 var supportedOSs = strings.Fields("windows darwin linux freebsd openbsd netbsd dragonfly solaris")
