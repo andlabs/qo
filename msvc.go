@@ -56,8 +56,15 @@ func (m *MSVC) BuildCXXFile(filename string, cflags []string) (stages []Stage, o
 		filename)
 }
 
-// TODO .m, .mm
-// I don't think these can be compiled with cl
+func (m *MSVC) BuildMFile(filename string, cflags []string) (stages []Stage, object string) {
+	// TODO
+	panic("Objective-C unimplemented on MSVC")
+}
+
+func (m *MSVC) BuildMMFile(filename string, cflags []string) (stages []Stage, object string) {
+	// TODO
+	panic("Objective-C++ unimplemented on MSVC")
+}
 
 func (m *MSVC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
 	resfile := objectName(filename, ".res")

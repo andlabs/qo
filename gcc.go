@@ -61,8 +61,25 @@ func (g *GCC) BuildCXXFile(filename string, cflags []string) (stages []Stage, ob
 		filename)
 }
 
-// TODO .m, .mm
-// apart from needing -lobjc at link time, this is identical to C/C++; the --std flags are the same (thanks Beelsebob in irc.freenode.net/#macdev)
+// apart from needing -lobjc at link time, Objective-C/C++ are identical to C/C++; the --std flags are the same (thanks Beelsebob in irc.freenode.net/#macdev)
+// TODO provide -lobjc?
+
+func (g *GCC) BuildMFile(filename string, cflags []string) (stages []Stage, object string) {
+	return g.buildRegularFile(
+		g.CC,
+		"--std=c99",		// I refuse to support C11.
+		cflags,
+		filename)
+}
+
+func (g *GCC) BuildMMFile(filename string, cflags []string) (stages []Stage, object string) {
+	g.LD = g.LDCXX
+	return g.buildRegularFile(
+		g.CXX,
+		"--std=c++11",
+		cflags,
+		filename)
+}
 
 func (g *GCC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")

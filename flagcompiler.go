@@ -96,7 +96,12 @@ func compileFlags() {
 	for _, f := range hfiles {
 		parseFile(f)
 	}
-	// TODO .m, .mm
+	for _, f := range mfiles {
+		parseFile(f)
+	}
+	for _, f := range mmfiles {
+		parseFile(f)
+	}
 	for _, f := range rcfiles {
 		parseFile(f)
 	}

@@ -11,8 +11,8 @@ import (
 type Toolchain interface {
 	BuildCFile(filename string, cflags []string) (stages []Stage, object string)
 	BuildCXXFile(filename string, cflags []string) (stages []Stage, object string)
-//	BuildMFile(filename string, cflags []string) (stages []Stage, object string)
-//	BuildMMFile(filename string, cflags []string) (stages []Stage, object string)
+	BuildMFile(filename string, cflags []string) (stages []Stage, object string)
+	BuildMMFile(filename string, cflags []string) (stages []Stage, object string)
 	BuildRCFile(filename string, cflags []string) (stages []Stage, object string)
 	Link(objects []string, ldflags []string, libs []string) *Executor
 }

@@ -41,7 +41,20 @@ func buildScript() {
 		stage3 = append(stage3, s[2]...)
 		objects = append(objects, obj)
 	}
-	// TODO .m, .mm files
+	for _, f := range mfiles {
+		s, obj := toolchain.BuildMFile(f, cflags)
+		stage1 = append(stage1, s[0]...)
+		stage2 = append(stage2, s[1]...)
+		stage3 = append(stage3, s[2]...)
+		objects = append(objects, obj)
+	}
+	for _, f := range mmfiles {
+		s, obj := toolchain.BuildMMFile(f, cflags)
+		stage1 = append(stage1, s[0]...)
+		stage2 = append(stage2, s[1]...)
+		stage3 = append(stage3, s[2]...)
+		objects = append(objects, obj)
+	}
 	for _, f := range rcfiles {
 		s, obj := toolchain.BuildRCFile(f, nil)
 		stage1 = append(stage1, s[0]...)
