@@ -17,8 +17,8 @@ There's no makefile or configure or cmake or whatever needed; it grabs what it n
 * C++ files: `.cpp`, `.cxx`, `.c++`, `.cc`
 	* note the case-insensitive part; `.C` is recognized as C, not C++
 * C header files: `.h`, `.hpp`, `.hxx`, `.h++`, `.hh`
-* Objective-C files: `.m` (**not yet implemented**)
-* Objective-C++ files: `.mm` (**not yet implemented**)
+* Objective-C files: `.m`
+* Objective-C++ files: `.mm`
 * Windows Resource files: `.rc`
 * TODO also need to add:
 	* gresource files: `.gresource`
