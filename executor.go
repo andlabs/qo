@@ -32,29 +32,3 @@ func (e *Executor) Do() {
 	e.Error = cmd.Run()
 	builder <- e
 }
-
-/*
-func main() {
-	go (&Executor{
-		Name:	"echo",
-		Line:		[]string{"echo", "hello,", "world"},
-	}).Do()
-	go (&Executor{
-		Name:	"sleep",
-		Line:		[]string{"sleep", "5"},
-	}).Do()
-	go (&Executor{
-		Name:	"badcommand",
-		Line:		[]string{"badcommand"},
-	}).Do()
-	go (&Executor{
-		Name:	"stderr",
-		Line:		[]string{"gcc", "--qwertyuiop"},
-	}).Do()
-	for i := 0; i < 4; i++ {
-		e := <-builder
-		fmt.Printf("done %q %v\n", e.Name, e.Error)
-		fmt.Printf("%q %q\n", e.Stdout.String(), e.Stderr.String())
-	}
-}
-*/
