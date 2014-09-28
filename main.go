@@ -20,7 +20,7 @@ func main() {
 	}
 	compileFlags()
 	buildScript()
-	err = os.MkdirAll(".qoobj", 0644)
+	err = os.MkdirAll(".qoobj", 0755)
 	if err != nil {
 		// TODO
 		panic(err)
