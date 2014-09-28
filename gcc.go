@@ -6,6 +6,19 @@ import (
 	// ...
 )
 
+// TODO use fully qualified OS/arch names for this; appropriate maps are provided below
+// TODO this will conflict with multilib...
+var gnuOSNames = map[string]string{
+	"windows":	"w64-mingw32",
+	// TODO darwin
+	"linux":		"linux-gnu",
+	// TODO others
+}
+var gnuArchNames = map[string]string{
+	"386":		"i686",		// TODO correct for windows and android; verify for others
+	"amd64":		"x86_64",
+}
+
 type GCC struct {
 	CC		string
 	CXX		string
