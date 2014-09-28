@@ -14,6 +14,7 @@ func main() {
 		listToolchains()
 		os.Exit(0)
 	}
+	computeExcludeSuffixes()
 	err := filepath.Walk(".", walker)
 	if err != nil {
 		panic(err)

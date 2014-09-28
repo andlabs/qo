@@ -18,7 +18,9 @@ var rcfiles []string
 var base string
 
 func consider(list *[]string, path string) {
-	// TODO operating system filters
+	if excludeFile(path) {
+		return
+	}
 	*list = append(*list, path)
 }
 
@@ -33,6 +35,9 @@ func walker(path string, info os.FileInfo, err error) error {
 		return nil
 	}
 	if info.IsDir() {
+		if excludeDir(path) {
+			return filepath.SkipDir
+		}
 		return nil
 	}
 	switch strings.ToLower(filepath.Ext(path)) {
