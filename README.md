@@ -30,7 +30,9 @@ There's no makefile or configure or cmake or whatever needed; it grabs what it n
 	* Qt Linguist files: `.ts` as XML with root t ag `<TS>`
 	* anything else (send ideas!)
 
-That being said, there are ways to customize the build: the $CFLAGS, $CXXFLAGS, and $LDFLAGS environment variables, some command-line options, and special directives in the source and header files. These directives are of the form
+qo also automatically builds with as many reasonable compiler diagnostics as possible enabled.
+
+There are ways to customize the build: the $CFLAGS, $CXXFLAGS, and $LDFLAGS environment variables, some command-line options, and special directives in the source and header files. These directives are of the form
 
 ```
 // #qo thing: arguments...
@@ -68,7 +70,7 @@ For MinGW, use the default `gcc` on Windows and `mingwcc` on other OSs if you ha
 
 All C files are assumed C99; all C++ files C++11.
 
-Still early in development, still rather unpolished, but suggestions welcome!
+For MSVC builds, large address awareness is implied.
 
 ### A note on optional features
 qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).

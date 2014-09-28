@@ -6,7 +6,7 @@ import (
 	// ...
 )
 
-type MSVC struct			{}
+type MSVC struct			{                                         }
 
 func (m *MSVC) buildRegularFile(std string, cflags []string, filename string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
@@ -106,7 +106,7 @@ func (m *MSVC) Link(objects []string, ldflags []string, libs []string) *Executor
 	}
 	line := append([]string{
 		"link",
-		"/largeaddressaware",		// TODO keep?
+		"/largeaddressaware",
 		"/nologo",
 	}, objects...)
 	line = append(line, ldflags...)
