@@ -16,7 +16,7 @@ func printProgress(step string) {
 	fmt.Printf("[%3d%%] %s\n", int(progress), step)
 }
 
-func runStage(s Stage) (success bool) {
+func runStage(s Stage) {
 	indices := make(map[*Executor]int)
 	for i, e := range s {
 		indices[e] = i
@@ -31,13 +31,11 @@ func runStage(s Stage) (success bool) {
 			fmt.Fprintf(os.Stderr, "\n")
 		}
 		if e.Error != nil {
-			fmt.Fprintf(os.Stderr, "[FAIL] Step %q failed with error: %v\n", e.Name, e.Error)
-			return false
+			fail("Step %q failed with error: %v", e.Name, e.Error)
 		}
 		progress += percentPer
 		printProgress(e.Name)
 	}
-	return true
 }
 
 func run() {
@@ -45,9 +43,6 @@ func run() {
 	progress = 0
 	printProgress("Beginning build")
 	for _, stage := range script {
-		if !runStage(stage) {
-			// TODO alert failure
-			os.Exit(1)
-		}
+		runStage(stage)
 	}
 }

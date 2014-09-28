@@ -10,6 +10,13 @@ import (
 	"strings"
 )
 
+func fail(format string, args ...interface{}) {
+	fmt.Fprintf(os.Stderr, "[FAIL] ")
+	fmt.Fprintf(os.Stderr, format, args...)
+	fmt.Fprintf(os.Stderr, "\n")
+	os.Exit(1)
+}
+
 func main() {
 	flag.Parse()
 	if *selectedToolchain == "list" {
@@ -27,14 +34,13 @@ func main() {
 	computeExcludeSuffixes()
 	err := filepath.Walk(".", walker)
 	if err != nil {
-		panic(err)
+		fail("Error collecting files: %v", err)
 	}
 	compileFlags()
 	buildScript()
 	err = os.MkdirAll(".qoobj", 0755)
 	if err != nil {
-		// TODO
-		panic(err)
+		fail("Error making work directory .qoobj: %v", err)
 	}
 	run()
 	os.Exit(0)		// success
