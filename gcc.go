@@ -82,6 +82,9 @@ func (g *GCC) BuildMMFile(filename string, cflags []string) (stages []Stage, obj
 }
 
 func (g *GCC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
+	if g.RC == "" {
+		fail("LLVM/clang does not come with a Windows resource compiler (if this message appears in other situations in error, contact andlabs)")
+	}
 	object = objectName(filename, ".o")
 	line := append([]string{
 		g.RC,
@@ -148,7 +151,6 @@ func init() {
 		CXX:			"clang++",
 		LD:			"clang",
 		LDCXX:		"clang++",
-		// TODO RC
 		ArchFlag:		"-m32",
 	}
 	toolchains["clang"]["amd64"] = &GCC{
@@ -156,7 +158,6 @@ func init() {
 		CXX:			"clang++",
 		LD:			"clang",
 		LDCXX:		"clang++",
-		// TODO RC
 		ArchFlag:		"-m64",
 	}
 	toolchains["mingwcc"] = make(map[string]Toolchain)
