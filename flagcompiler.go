@@ -24,8 +24,7 @@ func pkgconfig(which string, pkgs []string) []string {
 	cmd.Stderr = os.Stderr
 	output, err := cmd.Output()
 	if err != nil {
-		// TODO
-		panic(err)
+		fail("Error runing pkg-config: %v", err)
 	}
 	return strings.Fields(string(output))
 }
@@ -33,8 +32,7 @@ func pkgconfig(which string, pkgs []string) []string {
 func parseFile(filename string) {
 	f, err := os.Open(filename)
 	if err != nil {
-		// TODO
-		panic(err)
+		fail("Error opening %s to scan for #qo directives: %v", filename, err)
 	}
 	defer f.Close()
 	r := bufio.NewScanner(f)
@@ -64,13 +62,11 @@ func parseFile(filename string) {
 				libs = append(libs, parts[i])
 			}
 		default:
-			// TODO
-			panic("invalid line")
+			fail("Invalid #qo directive %q in %s", parts[0], filename)
 		}
 	}
 	if err := r.Err(); err != nil {
-		// TODO
-		panic(err)
+		fail("Error reading %s to scan for #qo directives: %v", filename, err)
 	}
 }
 
