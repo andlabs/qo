@@ -17,8 +17,7 @@ var targetArch = flag.String("arch", runtime.GOARCH, "select target architecture
 func targetName() string {
 	pwd, err := os.Getwd()
 	if err != nil {
-		// TODO
-		panic(err)
+		fail("Error getting current working directory to determine target name: %v", err)
 	}
 	target := filepath.Base(pwd)
 	if *targetOS == "windows" {
