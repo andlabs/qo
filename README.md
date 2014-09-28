@@ -21,10 +21,13 @@ There's no makefile or configure or cmake or whatever needed; it grabs what it n
 * Objective-C++ files: `.mm`
 * Windows Resource files: `.rc`
 * TODO also need to add:
-	* gresource files: `.gresource`
+	* gresource files: `.xml` with root tag `<gresources>`
+	* Qt moc files (will need some way to distinguish; same as C headers)
+	* Qt Designer files: `.ui` as XML with root tag `<ui>`
+	* anything else (send ideas!)
+* TODO can these be embedded?
 	* gettext files: `.po`
-	* Qt Designer files (?????)
-	* Qt Translator files (?????)
+	* Qt Linguist files: `.ts` as XML with root t ag `<TS>`
 	* anything else (send ideas!)
 
 That being said, there are ways to customize the build: the $CFLAGS, $CXXFLAGS, and $LDFLAGS environment variables, some command-line options, and special directives in the source and header files. These directives are of the form
