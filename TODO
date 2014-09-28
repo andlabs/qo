@@ -6,3 +6,5 @@
 - toolchain-specific pkg-configs
 - somehow figure out how to add -I (and others?) to rc
 - sdl-config? wx-config?
+- in-source build tag exclusion
+- a 'unix' OS tag (requires in-source build tag exclusions)
