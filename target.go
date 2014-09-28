@@ -56,6 +56,8 @@ func computeExcludeSuffixes() {
 		}
 		excludeSuffixes = append(excludeSuffixes, "_" + arch)
 		excludeFolders = append(excludeFolders, arch)
+		excludeSuffixes = append(excludeSuffixes, "_" + *targetOS + "_" + arch)
+		excludeFolders = append(excludeFolders, *targetOS + "_" + arch)
 	}
 }
 
