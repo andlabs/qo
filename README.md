@@ -55,9 +55,14 @@ Debug builds are simple: just pass `-g` to `qo`.
 
 Cross-compiling is also simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. (`-os` may change.)
 
-For MinGW, use the default `gcc` on Windows and `mingwcc` on other OSs if you have the correct cross-compiler toolchain set up.
+To make cross-compiling easy, there are ways to mark a certain source file or directory as being only for a certain target OS, architecture, or both:
 
-TODO conditional compilation via the filename, just like `go build`
+- For files, the filename must have `_OS`, `_arch`, or `_OS_arch` before the extension.
+- For directories, the directory name must consist entirely of `OS`, `arch`, or `OS_arch`.
+
+The list of supported OSs and architectures can be gathered with `-os list` and `-arch list`, respectively.
+
+For MinGW, use the default `gcc` on Windows and `mingwcc` on other OSs if you have the correct cross-compiler toolchain set up.
 
 `-x` shows a verbose build.
 
