@@ -3,15 +3,25 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"flag"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
 	flag.Parse()
 	if *selectedToolchain == "list" {
 		listToolchains()
+		os.Exit(0)
+	}
+	if *targetOS == "list" {
+		fmt.Printf("%s\n", strings.Join(supportedOSs, "\n"))
+		os.Exit(0)
+	}
+	if *targetArch == "list" {
+		fmt.Printf("%s\n", strings.Join(supportedArchs, "\n"))
 		os.Exit(0)
 	}
 	computeExcludeSuffixes()

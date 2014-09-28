@@ -8,11 +8,11 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sort"
 )
 
-// TODO list
-var targetOS = flag.String("os", runtime.GOOS, "select target OS")
-var targetArch = flag.String("arch", runtime.GOARCH, "select target architecture")
+var targetOS = flag.String("os", runtime.GOOS, "select target OS; list for a list of supported OSs")
+var targetArch = flag.String("arch", runtime.GOARCH, "select target architecture; list for a list of supported architectures")
 
 func targetName() string {
 	pwd, err := os.Getwd()
@@ -25,6 +25,11 @@ func targetName() string {
 
 var supportedOSs = strings.Fields("windows darwin linux freebsd openbsd netbsd dragonfly solaris")
 var supportedArchs = strings.Fields("386 amd64")
+
+func init() {
+	sort.Strings(supportedOSs)
+	sort.Strings(supportedArchs)
+}
 
 var excludeSuffixes []string
 var excludeFolders []string
