@@ -64,3 +64,9 @@ Still early in development, still rather unpolished, but suggestions welcome!
 
 ### A note on optional features
 qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).
+
+### Notes on MSVC
+The version of MSVC used defines how much C99 or C++11 can be used.
+
+The following seem to be undocumented as being MinGW extensions to the rc format:
+- arithmetic expressions
