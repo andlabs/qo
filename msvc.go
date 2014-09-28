@@ -15,8 +15,8 @@ func (m *MSVC) buildRegularFile(std string, cflags []string, filename string) (s
 		filename,
 		"/c",
 		std,
-		// TODO /bigobj?
 		"/analyze",
+		"/bigobj",
 		"/nologo",
 		"/RTC1",
 		"/RTCc",
