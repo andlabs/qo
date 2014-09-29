@@ -127,7 +127,7 @@ func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Execu
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
 
-var target = flag.String("target", "", "gcc/clang target triplet to use; see README")
+var triplet = flag.String("triplet", "", "gcc/clang target triplet to use; see README")
 
 var garchs = map[string]string{
 	"386":		"i686",
@@ -162,8 +162,8 @@ func isMultilib() bool {
 func (g *GCC) Prepare() {
 	garch := garchs[*targetArch]
 	prefix := ""
-	if *target != "" {
-		prefix = *target + "-"
+	if *triplet != "" {
+		prefix = *triplet + "-"
 		goto out
 	}
 	// set this before any of the following in case target == host
@@ -202,8 +202,8 @@ var clangOS = map[string]string{
 }
 
 func (g *Clang) Prepare() {
-	if *target != "" {
-		g.ArchFlag = []string{"-target", *target}
+	if *triplet != "" {
+		g.ArchFlag = []string{"-target", *triplet}
 		return
 	}
 	// set this before any of the following in case target == host

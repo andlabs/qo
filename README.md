@@ -73,7 +73,7 @@ All C files are assumed C99; all C++ files C++11.
 For MSVC builds, large address awareness is implied.
 
 ### On cross-compiling
-Cross-compiling aims to simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. There's also a `-target` option for GCC and clang builds.
+Cross-compiling aims to simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. There's also a `-triplet` option for GCC and clang builds.
 
 (Cross-compiling is not supported by the msvc toochain; attempting to cross-compile with it is not disallowed, but qo does no special processing for it. Make sure you can actually do it (for instance, via wine).)
 
@@ -86,7 +86,7 @@ qo makes the following compromise. Given the following terms:
 **unqualified binaries** - binaries named `gcc`, `g++`, `clang`, and `clang++`, without any target triplet<br>
 **multilib flags** - `-m32` and `-m64`
 
-1. If the `-target` option is passed to qo to explicitly specify a triplet to use, that triplet is used, no questions asked. No mulitlib flags will be appended to the command line.
+1. If the `-triplet` option is passed to qo to explicitly specify a triplet to use, that triplet is used, no questions asked. No mulitlib flags will be appended to the command line.
 2. Otherwise, if the target is the same as the host, unqualified binaries are run, and multilib flags may or may not be appended.
 3. Otherwise, if the target OS is the same as the host OS and host OS is not Windows, if the host arch is either `386` or `amd64` and the target arch is either `386` or `amd64`, a multilib flag is appended, and the unqualified binaries are run.
 4. Otherwise, if using clang, a generic target triplet is generated and used.
