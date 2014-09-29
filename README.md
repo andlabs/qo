@@ -1,19 +1,43 @@
-qo is a simple program that builds C and C++ programs (though I can add more supported languages later).
+# qo: a build system for C/C++
 
-**This README needs to be rewritten.**
+qo is a new build system for C and C++ (though I can add other languages later). In contrast to existing build systems, which require the use of not only a Makefile but also an assortment of complex configuration files (or multiple stages thereof), qo doesn't use any. Instead, custom build settings are embedded using simple directives directly into the source code of your program. qo conditionally compiles each source file based on its filename. qo also supports some resource files normally compiled inot the program. Debug builds and cross-compiles are also intended to be done as easily as possible.
 
-Usage is simple:
+Enjoy! Suggestions, fixes, etc. welcome.
+
+## Getting started
+
+Let's say you have a simple project in a directory:
 
 ```
 $ cd project
 $ ls
-file.c file2.c file3.c file4.c project.h
+file1.c file2.c file3.c file4.c project.h
+```
+
+To build this project as it stands, simply invoke qo with no arguments:
+
+```
 $ qo
-...
+```
+
+You should see the status of the build as it happens, and upon completion, the compiled program will be left as the executable `project` (named after the project directory) in the project directory, ready for running:
+
+```
 $ ./project
 ```
 
-There's no makefile or configure or cmake or whatever needed; it grabs what it needs directly from the source and header files. In fact, here's a list of all the files and their extensions (case insensitive) that qo knows about:
+To build a debug version, pass `-g`:
+
+```
+$ qo -g
+```
+
+To see the build as it happens, pass `-x`.
+
+Note that qo automatically builds with as many reasonable compiler diagnostics as possible enabled.
+
+## What is Built?
+qo scans the current directory and all subdirectories for files to build. Files matched have the given (case-insensitive) extensions:
 
 * C files: `.c`
 * C++ files: `.cpp`, `.cxx`, `.c++`, `.cc`
@@ -22,69 +46,60 @@ There's no makefile or configure or cmake or whatever needed; it grabs what it n
 * Objective-C files: `.m`
 * Objective-C++ files: `.mm`
 * Windows Resource files: `.rc`
-* TODO also need to add:
-	* gresource files: `.xml` with root tag `<gresources>`
-	* Qt moc files (will need some way to distinguish; same as C headers)
-	* Qt Designer files: `.ui` as XML with root tag `<ui>`
-	* anything else (send ideas!)
-* TODO can these be embedded?
-	* gettext files: `.po`
-	* Qt Linguist files: `.ts` as XML with root t ag `<TS>`
-	* anything else (send ideas!)
 
-qo also automatically builds with as many reasonable compiler diagnostics as possible enabled.
+Files can be excluded from the build if they are meant for a different operating system and/or CPU architecture; this is also done by filename and is described below, under "Cross-Compiling".
 
-There are ways to customize the build: the $CFLAGS, $CXXFLAGS, and $LDFLAGS environment variables, some command-line options, and special directives in the source and header files. These directives are of the form
+## Configuring the Build
+So how do you specify extra libraries or compiler options for a project? Simple: you include special directives in the source files! Directives take the form
 
 ```
-// #qo thing: arguments...
+// #qo directive: arguments
 ```
 
-where the whitespace up to and including the first space after `#qo` is significant.
+where whitespace up to and including the first space after `#qo` is significant, and where the `//` must be the first thing on the line.
 
-The directives are
+The two most important (and most portable) directives are `pkg-config` and `LIBS`. `pkg-config` passes the package names listed in `arguments` to `pkg-config`, inserting the resultant compiler flags as needed. `LIBS` takes the library names in `arguments` and passes them to the linker, applying the correct argument format for the toolchain in use (see "Cross-Compiling" below). For example:
 
 ```
-CFLAGS
-CXXFLAGS
-LDFLAGS
-	just like the environment variables
-pkg-config
-	passes named packages to pkg-config and adds the results to CFLAGS, CXXFLAGS, and LDFLAGS
-LIBS
-	adds named libraries to LDFLAGS. Intended to make cross-compiling with MinGW and MSVC easier; for instance, LIBS: user32 will do -luser32 on MinGW and user32.lib on MSVC
+// #qo pkg-config: gtk+-3.0
+// #qo LIBS: pwquality sqlite3
 ```
 
-Debug builds are simple: just pass `-g` to `qo`.
+For more ocntrol over the command lines for compiling each file, the `CFLAGS`, `CXXFLAGS`, and `LDFLAGS` directives pass their `arguments` as extra arguments to the C compiler, C++ compiler, and linker, respectively.
 
-Cross-compiling is designed to be simple for users; see belwo.
+`#qo` directives are assembled from all source files together. That is, do not copy the directives into each source file; bad things will happen.
 
-To make cross-compiling easy, there are ways to mark a certain source file or directory as being only for a certain target OS, architecture, or both:
+In addition, the `$CFLAGS`, `$CXXFLAGS`, and `$LDFLAGS` environment variables also change compiler/linker command-line arguments.
 
-- For files, the filename must have `_OS`, `_arch`, or `_OS_arch` before the extension.
-- For directories, the directory name must consist entirely of `OS`, `arch`, or `OS_arch`.
+## Cross-Compiling
+qo tries to make cross-compiling easy. There are three concepts at play:
 
-The list of supported OSs and architectures can be gathered with `-os list` and `-arch list`, respectively.
+- the target OS
+- the target architecture
+- the toolchain, which defines which compilers and linkers to use
 
-For MinGW, use the default `gcc` on Windows and `mingwcc` on other OSs if you have the correct cross-compiler toolchain set up.
+By default, qo builds for the system you are presently running (actually the system the qo binary was built for; but this is a limitation of Go). This is called the host. You can change the target OS, target arch, or toolchain with the `-os`, `-arch`, and `-tc` options, respectively. Pass `list` to see a list of supported OSs, architectures, and toolchains.
 
-`-x` shows a verbose build.
+(qo by default tends toward gcc/clang-based toolchains.)
 
-All C files are assumed C99; all C++ files C++11.
+In addition, qo will omit files and folders from the build if they are intended for a differnet OS and/or architecture than the target. To omit a file, have `_OS`, `_arch`, or `_OS_arch` before the extension. To omit a folder, its name must consist entirely of `OS`, `arch`, or `OS_arch`. For example:
 
-For MSVC builds, large address awareness is implied.
+```
+file.c                compiled always
+file_windows.c        only compiled if targetting Windows
+file_386.c            only compiled if targetting architecture 386
+file_windows_386.c    only compiled if targetting 386-based Windows
+directory/            trasversed always
+windows/              only trasversed on Windows
+386/                  only trasversed if targetting 386
+windows_386/          only trasversed if targetting 386-based Windows
+```
 
-### On cross-compiling
-Cross-compiling aims to simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. There's also a `-triplet` option for GCC and clang builds.
-
-(Cross-compiling is not supported by the msvc toochain; attempting to cross-compile with it is not disallowed, but qo does no special processing for it. Make sure you can actually do it (for instance, via wine).)
-
-Under the hood, cross-compiling is a mess. Not only does gcc not natively cross-compile, but there's this thing called "multilib" which makes things far more complicated. And that doesn't get into the various BSDs that embed the OS version and build system in the target triplet.
+## Cross-Compiler Executable Search Order
+Under the hood, however, cross-compiling is a very complex and problematic undertaking for historical and practical reasons. qo assumes you have a correctly configured cross-compiler setup for the target OS, architecture, and toolchain (even if it's just the toolchain).
 
 qo makes the following compromise. Given the following terms:
 
-**host** - the OS that qo is running on<br>
-**target** - the OS/arch pair you choose to compile to; made the same as the host by default<br>
 **unqualified binaries** - binaries named `gcc`, `g++`, `clang`, and `clang++`, without any target triplet<br>
 **multilib flags** - `-m32` and `-m64`
 
@@ -97,6 +112,7 @@ qo makes the following compromise. Given the following terms:
 
 For more information, see [this](http://stackoverflow.com/a/26101710/3408572) and its references.
 
+## Notes
 ### A note on optional features
 qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).
 

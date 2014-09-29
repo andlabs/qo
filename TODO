@@ -1,8 +1,18 @@
 - specify target type (exe, so/dll)
 - figure out what to do about assembly language
 - figure out how to change debug symbol format on Mac OS X and MSVC to one embedded in the binary (rather than .dSYM and .pdb files, respectively)
-- toolchain-specific pkg-configs
+- toolchain-specific pkg-configs and pkg-config options for msvc
 - somehow figure out how to add -I (and others?) to rc
 - sdl-config? wx-config?
 - in-source build tag exclusion
 - a 'unix' OS tag (requires in-source build tag exclusions)
+
+* TODO also need to add:
+	* gresource files: `.xml` with root tag `<gresources>`
+	* Qt moc files (will need some way to distinguish; same as C headers)
+	* Qt Designer files: `.ui` as XML with root tag `<ui>`
+	* anything else (send ideas!)
+* TODO can these be embedded?
+	* gettext files: `.po`
+	* Qt Linguist files: `.ts` as XML with root t ag `<TS>`
+	* anything else (send ideas!)
