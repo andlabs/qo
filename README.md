@@ -49,6 +49,8 @@ qo scans the current directory and all subdirectories for files to build. Files 
 
 Files can be excluded from the build if they are meant for a different operating system and/or CPU architecture; this is also done by filename and is described below, under "Cross-Compiling".
 
+C files are assumed to be C99. C++ files are assumed to be C++11.
+
 ## Configuring the Build
 So how do you specify extra libraries or compiler options for a project? Simple: you include special directives in the source files! Directives take the form
 
