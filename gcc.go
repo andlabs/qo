@@ -6,28 +6,6 @@ import (
 	// ...
 )
 
-// TODO use fully qualified OS/arch names for this; appropriate maps are provided below
-// TODO this will conflict with multilib...
-var gnuOSNames = map[string]string{
-	"windows":	"w64-mingw32",
-	// TODO darwin
-	"linux":		"linux-gnu",
-	// no FreeBSD; situation too complicated so we'll just use clang
-	// TODO others
-}
-var gnuArchNames = map[string]string{
-	"386":		"i686",		// TODO correct for windows and android; verify for others (including freebsd 10)
-	"amd64":		"x86_64",
-}
-// for multilib (-m32/m64 with one compiler):
-// darwin: yes
-// linux: yes
-// freebsd: yes
-// openbsd: todo
-// netbsd: todo
-// solaris: todo
-// dragonfly: todo
-
 type GCC struct {
 	CC		string
 	CXX		string

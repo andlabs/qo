@@ -72,8 +72,6 @@ All C files are assumed C99; all C++ files C++11.
 
 For MSVC builds, large address awareness is implied.
 
-For FreeBSD builds, clang is **required** due to GNU triplet madness and gcc versioning conflicts. This means that FreeBSD 8 users will need to install clang manually.
-
 ### A note on optional features
 qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).
 
