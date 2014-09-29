@@ -72,6 +72,25 @@ All C files are assumed C99; all C++ files C++11.
 
 For MSVC builds, large address awareness is implied.
 
+### On cross-compiling
+(There is no cross-compiling with msvc; the following only applies to gcc and clang.)
+
+Cross-compiling is a mess. Not only does gcc not natively cross-compile, but there's this thing called "multilib" which makes things far more complicated. And that doesn't get into the various BSDs that embed the OS version and build system in the target triplet.
+
+qo makes the following compromise. Given the following terms:
+
+**host** - the OS that qo is running on<br>
+**target** - the OS/arch pair you choose to compile to; made the same as the host by default<br>
+**unqualified binaries** - binaries named `gcc`, `g++`, `clang`, and `clang++`, without any target triplet<br>
+**multilib flags** - `-m32` and `-m64`
+
+1) If the `-target` option is passed to qo to explicitly specify a triplet to use, that triplet is used, no questions asked. No mulitlib flags will be appended to the command line.
+2) Otherwise, if the target is the same as the host, unqualified binaries are run, and multilib flags may or may not be appended.
+3) Otherwise, if the host OS is not Windows, if the host arch is either `386` or `amd64` and the target arch is either `386` or `amd64`, a multilib flag is appended, and the unqualified binaries are run.
+4) Otherwise, if using clang, a generic target triplet is generated and used.
+5) Otherwise, if the target OS is windows, MinGW-w64 binaries are used.
+6) Otherwise, an error occurs.
+
 ### A note on optional features
 qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).
 
