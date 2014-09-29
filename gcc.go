@@ -3,6 +3,7 @@
 package main
 
 import (
+	"flag"
 	"runtime"
 )
 
@@ -126,6 +127,8 @@ func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Execu
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
 
+var target = flag.String("target", "", "gcc/clang target triplet to use; see README")
+
 var garchs = map[string]string{
 	"386":		"i686",
 	"amd64":		"x86_64",
@@ -157,7 +160,12 @@ func isMultilib() bool {
 }
 
 func (g *GCC) Prepare() {
-	// TODO explicit triplet override
+	garch := garchs[*targetArch]
+	prefix := ""
+	if *target != "" {
+		prefix = *target + "-"
+		goto out
+	}
 	// set this before any of the following in case target == host
 	g.ArchFlag = garchflags[*targetArch]
 	if *targetOS == runtime.GOOS && *targetArch == runtime.GOARCH {
@@ -166,8 +174,6 @@ func (g *GCC) Prepare() {
 	if isMultilib() {
 		return
 	}
-	garch := garchs[*targetArch]
-	prefix := ""
 	switch *targetOS {
 	case "windows":
 		prefix = garch + "-w64-mingw32-"
@@ -177,6 +183,7 @@ func (g *GCC) Prepare() {
 	default:
 		fail("Sorry, cross-compiling for gcc on %s requires specifying an explicit target triple with -target", *targetOS)
 	}
+out:
 	g.CC = prefix + g.CC
 	g.CXX = prefix + g.CXX
 	g.RC = prefix + g.RC
@@ -195,7 +202,10 @@ var clangOS = map[string]string{
 }
 
 func (g *Clang) Prepare() {
-	// TODO explicit triplet override
+	if *target != "" {
+		g.ArchFlag = []string{"-target", *target}
+		return
+	}
 	// set this before any of the following in case target == host
 	g.ArchFlag = garchflags[*targetArch]
 	if *targetOS == runtime.GOOS && *targetArch == runtime.GOARCH {
