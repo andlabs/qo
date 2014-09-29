@@ -77,6 +77,9 @@ func compileFlags() {
 			*selectedToolchain = "clang"
 		}
 	}
+	if *selectedToolchain == "gcc" && *targetOS == "freebsd" {
+		fail("Sorry, due to GNU triplet complexity gcc/FreeBSD cannot be used with qo. FreeBSD 8 users will need to install clang manually.")
+	}
 	toolchain = toolchains[*selectedToolchain][*targetArch]
 
 	cflags = append(cflags, strings.Fields(os.Getenv("CFLAGS"))...)
