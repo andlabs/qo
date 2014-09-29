@@ -193,12 +193,16 @@ type Clang struct {
 	*GCCBase
 }
 
+// see the LLVM source; file include/llvm/ADT/Triple.h (thanks jroelofs in irc.oftc.net/#llvm)
 var clangOS = map[string]string{
-	"windows":	"TODO",
+	"windows":	"win32",
 	"linux":		"linux",
-	"darwin":		"TODO",
-	"freebsd":		"TODO",
-	// TODO others
+	"darwin":		"darwin",
+	"freebsd":		"freebsd",
+	"openbsd":	"openbsd",
+	"netbsd":		"netbsd",
+	"dragonfly":	"dragonfly",
+	"solaris":		"solaris",
 }
 
 func (g *Clang) Prepare() {
