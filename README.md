@@ -1,5 +1,7 @@
 qo is a simple program that builds C and C++ programs (though I can add more supported languages later).
 
+**This README needs to be rewritten.**
+
 Usage is simple:
 
 ```
