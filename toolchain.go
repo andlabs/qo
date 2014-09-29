@@ -22,7 +22,7 @@ var toolchains = make(map[string]Toolchain)
 
 // TODO: Plan 9 compilers (plan9)
 
-var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list")
+var selectedToolchain = flag.String("tc", "",  "select toolchain; list for a full list of supported toolchains")
 
 func listToolchains() {
 	tc := make([]string, 0, len(toolchains))
