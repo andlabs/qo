@@ -123,8 +123,10 @@ func (m *MSVC) Link(objects []string, ldflags []string, libs []string) *Executor
 	}
 }
 
+func (m *MSVC) Prepare() {
+	// nothing to do here
+}
+
 func init() {
-	toolchains["msvc"] = make(map[string]Toolchain)
-	toolchains["msvc"]["386"] = &MSVC{}
-	toolchains["msvc"]["amd64"] = &MSVC{}
+	toolchains["msvc"] = &MSVC{}
 }

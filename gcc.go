@@ -3,21 +3,20 @@
 package main
 
 import (
-	// ...
+	"runtime"
 )
 
-type GCC struct {
+type GCCBase struct {
 	CC		string
 	CXX		string
 	LD		string
-	LDCXX	string
 	RC		string
-	ArchFlag	string
+	ArchFlag	[]string
 }
 
-func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename string) (stages []Stage, object string) {
+func (g *GCCBase) buildRegularFile(cc string, std string, cflags []string, filename string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
-	line := append([]string{
+	line := []string{
 		cc,
 		filename,
 		"-c",
@@ -26,8 +25,11 @@ func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename 
 		"-Wextra",
 		// for the case where we are implementing an interface and are not using some parameter
 		"-Wno-unused-parameter",
-		g.ArchFlag,
-	}, cflags...)
+	}
+	if g.ArchFlag != nil {
+		line = append(line, g.ArchFlag...)
+	}
+	line = append(line, cflags...)
 	if *debug {
 		line = append(line, "-g")
 	}
@@ -44,7 +46,7 @@ func (g *GCC) buildRegularFile(cc string, std string, cflags []string, filename 
 	return stages, object
 }
 
-func (g *GCC) BuildCFile(filename string, cflags []string) (stages []Stage, object string) {
+func (g *GCCBase) BuildCFile(filename string, cflags []string) (stages []Stage, object string) {
 	return g.buildRegularFile(
 		g.CC,
 		"--std=c99",		// I refuse to support C11.
@@ -52,8 +54,8 @@ func (g *GCC) BuildCFile(filename string, cflags []string) (stages []Stage, obje
 		filename)
 }
 
-func (g *GCC) BuildCXXFile(filename string, cflags []string) (stages []Stage, object string) {
-	g.LD = g.LDCXX
+func (g *GCCBase) BuildCXXFile(filename string, cflags []string) (stages []Stage, object string) {
+	g.LD = g.CXX
 	return g.buildRegularFile(
 		g.CXX,
 		"--std=c++11",
@@ -64,24 +66,15 @@ func (g *GCC) BuildCXXFile(filename string, cflags []string) (stages []Stage, ob
 // apart from needing -lobjc at link time, Objective-C/C++ are identical to C/C++; the --std flags are the same (thanks Beelsebob in irc.freenode.net/#macdev)
 // TODO provide -lobjc?
 
-func (g *GCC) BuildMFile(filename string, cflags []string) (stages []Stage, object string) {
-	return g.buildRegularFile(
-		g.CC,
-		"--std=c99",		// I refuse to support C11.
-		cflags,
-		filename)
+func (g *GCCBase) BuildMFile(filename string, cflags []string) (stages []Stage, object string) {
+	return g.BuildCFile(filename, cflags)
 }
 
-func (g *GCC) BuildMMFile(filename string, cflags []string) (stages []Stage, object string) {
-	g.LD = g.LDCXX
-	return g.buildRegularFile(
-		g.CXX,
-		"--std=c++11",
-		cflags,
-		filename)
+func (g *GCCBase) BuildMMFile(filename string, cflags []string) (stages []Stage, object string) {
+	return g.BuildCXXFile(filename, cflags)
 }
 
-func (g *GCC) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
+func (g *GCCBase) BuildRCFile(filename string, cflags []string) (stages []Stage, object string) {
 	if g.RC == "" {
 		fail("LLVM/clang does not come with a Windows resource compiler (if this message appears in other situations in error, contact andlabs)")
 	}
@@ -103,15 +96,21 @@ func (g *GCC) BuildRCFile(filename string, cflags []string) (stages []Stage, obj
 	return stages, object
 }
 
-func (g *GCC) Link(objects []string, ldflags []string, libs []string) *Executor {
+func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Executor {
+	if g.LD == "" {
+		g.LD = g.CC
+	}
 	target := targetName()
 	for i := 0; i < len(libs); i++ {
 		libs[i] = "-l" + libs[i]
 	}
-	line := append([]string{
+	line := []string{
 		g.LD,
-		g.ArchFlag,
-	}, objects...)
+	}
+	if g.ArchFlag != nil {
+		line = append(line, g.ArchFlag...)
+	}
+	line = append(line, objects...)
 	line = append(line, ldflags...)
 	line = append(line, libs...)
 	if *debug {
@@ -127,54 +126,82 @@ func (g *GCC) Link(objects []string, ldflags []string, libs []string) *Executor 
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
 
+var garchs = map[string]string{
+	"386":		"i686",
+	"amd64":		"x86_64",
+}
+
+// 386 and amd64 are commonly configured using multilib rather than targets
+// everything else will be an empty string
+var garchflags = map[string][]string{
+	"386":		[]string{"-m32"},
+	"amd64":		[]string{"-m64"},
+}
+
+type GCC struct {
+	*GCCBase
+}
+
+func (g *GCC) Prepare() {
+	// set this before any of the following in case target == host
+	g.ArchFlag = garchflags[*targetArch]
+	// TODO explicit triplet override
+	if *targetOS == runtime.GOOS && *targetArch == runtime.GOARCH {
+		return
+	}
+	garch := garchs[*targetArch]
+	prefix := ""
+	switch *targetOS {
+	case "windows":
+		prefix = garch + "-w64-mingw32-"
+	case "linux":
+		// TODO abi override
+		prefix = garch + "-linux-gnu-"
+	default:
+		fail("Sorry, cross-compiling for gcc on %s requires specifying an explicit target triple with -target", *targetOS)
+	}
+	g.CC = prefix + g.CC
+	g.CXX = prefix + g.CXX
+	g.RC = prefix + g.RC
+}
+
+type Clang struct {
+	*GCCBase
+}
+
+var clangOS = map[string]string{
+	"windows":	"TODO",
+	"linux":		"linux",
+	"darwin":		"TODO",
+	"freebsd":		"TODO",
+	// TODO others
+}
+
+func (g *Clang) Prepare() {
+	// set this before any of the following in case target == host
+	g.ArchFlag = garchflags[*targetArch]
+	// TODO explicit triplet override
+	if *targetOS == runtime.GOOS && *targetArch == runtime.GOARCH {
+		return
+	}
+	// clang makes the job easier
+	// TODO abi override
+	g.ArchFlag = append(g.ArchFlag, "-target", garchs[*targetArch] + "-" + clangOS[*targetOS])
+}
+
 func init() {
-	toolchains["gcc"] = make(map[string]Toolchain)
-	toolchains["gcc"]["386"] = &GCC{
-		CC:			"gcc",
-		CXX:			"g++",
-		LD:			"gcc",
-		LDCXX:		"g++",
-		RC:			"windres",
-		ArchFlag:		"-m32",
+	toolchains["gcc"] = &GCC{
+		GCCBase:		&GCCBase{
+			CC:		"gcc",
+			CXX:		"g++",
+			RC:		"windres",
+		},
 	}
-	toolchains["gcc"]["amd64"] = &GCC{
-		CC:			"gcc",
-		CXX:			"g++",
-		LD:			"gcc",
-		LDCXX:		"g++",
-		RC:			"windres",
-		ArchFlag:		"-m64",
-	}
-	toolchains["clang"] = make(map[string]Toolchain)
-	toolchains["clang"]["386"] = &GCC{
-		CC:			"clang",
-		CXX:			"clang++",
-		LD:			"clang",
-		LDCXX:		"clang++",
-		ArchFlag:		"-m32",
-	}
-	toolchains["clang"]["amd64"] = &GCC{
-		CC:			"clang",
-		CXX:			"clang++",
-		LD:			"clang",
-		LDCXX:		"clang++",
-		ArchFlag:		"-m64",
-	}
-	toolchains["mingwcc"] = make(map[string]Toolchain)
-	toolchains["mingwcc"]["386"] = &GCC{
-		CC:			"i686-w64-mingw32-gcc",
-		CXX:			"i686-w64-mingw32-g++",
-		LD:			"i686-w64-mingw32-gcc",
-		LDCXX:		"i686-w64-mingw32-g++",
-		RC:			"i686-w64-mingw32-windres",
-		ArchFlag:		"-m32",
-	}
-	toolchains["mingwcc"]["amd64"] = &GCC{
-		CC:			"x86_64-w64-mingw32-gcc",
-		CXX:			"x86_64-w64-mingw32-g++",
-		LD:			"x86_64-w64-mingw32-gcc",
-		LDCXX:		"x86_64-w64-mingw32-g++",
-		RC:			"x86_64-w64-mingw32-windres",
-		ArchFlag:		"-m64",
+	toolchains["clang"] = &Clang{
+		GCCBase:		&GCCBase{
+			CC:		"clang",
+			CXX:		"clang++",
+			// no RC in clang
+		},
 	}
 }

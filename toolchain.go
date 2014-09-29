@@ -9,6 +9,7 @@ import (
 )
 
 type Toolchain interface {
+	Prepare()
 	BuildCFile(filename string, cflags []string) (stages []Stage, object string)
 	BuildCXXFile(filename string, cflags []string) (stages []Stage, object string)
 	BuildMFile(filename string, cflags []string) (stages []Stage, object string)
@@ -17,8 +18,7 @@ type Toolchain interface {
 	Link(objects []string, ldflags []string, libs []string) *Executor
 }
 
-// toolchains[name][arch]
-var toolchains = make(map[string]map[string]Toolchain)
+var toolchains = make(map[string]Toolchain)
 
 // TODO: Plan 9 compilers (plan9)
 

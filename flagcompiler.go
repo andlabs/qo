@@ -77,7 +77,8 @@ func compileFlags() {
 			*selectedToolchain = "clang"
 		}
 	}
-	toolchain = toolchains[*selectedToolchain][*targetArch]
+	toolchain = toolchains[*selectedToolchain]
+	toolchain.Prepare()
 
 	cflags = append(cflags, strings.Fields(os.Getenv("CFLAGS"))...)
 	cxxflags = append(cxxflags, strings.Fields(os.Getenv("CXXFLAGS"))...)
