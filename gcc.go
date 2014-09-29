@@ -132,7 +132,7 @@ var garchs = map[string]string{
 }
 
 // 386 and amd64 are commonly configured using multilib rather than targets
-// everything else will be an empty string
+// everything else will be a nil slice
 var garchflags = map[string][]string{
 	"386":		[]string{"-m32"},
 	"amd64":		[]string{"-m64"},
@@ -142,11 +142,28 @@ type GCC struct {
 	*GCCBase
 }
 
+func isMultilib() bool {
+	if *targetOS == runtime.GOOS && runtime.GOOS != "windows" {
+		// MinGW for Windows is not multilib
+		// assume everything else is
+		if runtime.GOARCH == "386" || runtime.GOARCH == "amd64" {
+			if *targetArch == "386" || *targetArch == "amd64" {
+				// multilib only
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (g *GCC) Prepare() {
+	// TODO explicit triplet override
 	// set this before any of the following in case target == host
 	g.ArchFlag = garchflags[*targetArch]
-	// TODO explicit triplet override
 	if *targetOS == runtime.GOOS && *targetArch == runtime.GOARCH {
+		return
+	}
+	if isMultilib() {
 		return
 	}
 	garch := garchs[*targetArch]
@@ -178,10 +195,13 @@ var clangOS = map[string]string{
 }
 
 func (g *Clang) Prepare() {
+	// TODO explicit triplet override
 	// set this before any of the following in case target == host
 	g.ArchFlag = garchflags[*targetArch]
-	// TODO explicit triplet override
 	if *targetOS == runtime.GOOS && *targetArch == runtime.GOARCH {
+		return
+	}
+	if isMultilib() {
 		return
 	}
 	// clang makes the job easier

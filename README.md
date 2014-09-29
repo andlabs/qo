@@ -55,7 +55,7 @@ LIBS
 
 Debug builds are simple: just pass `-g` to `qo`.
 
-Cross-compiling is also simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. (`-os` may change.)
+Cross-compiling is designed to be simple for users; see belwo.
 
 To make cross-compiling easy, there are ways to mark a certain source file or directory as being only for a certain target OS, architecture, or both:
 
@@ -73,9 +73,11 @@ All C files are assumed C99; all C++ files C++11.
 For MSVC builds, large address awareness is implied.
 
 ### On cross-compiling
-(There is no cross-compiling with msvc; the following only applies to gcc and clang.)
+Cross-compiling aims to simple: there's `-os`, `-arch`, and `-tc` commands for specifying target OS, architecture, and toolchain. There's also a `-target` option for GCC and clang builds.
 
-Cross-compiling is a mess. Not only does gcc not natively cross-compile, but there's this thing called "multilib" which makes things far more complicated. And that doesn't get into the various BSDs that embed the OS version and build system in the target triplet.
+(Cross-compiling is not supported by the msvc toochain; attempting to cross-compile with it is not disallowed, but qo does no special processing for it. Make sure you can actually do it (for instance, via wine).)
+
+Under the hood, cross-compiling is a mess. Not only does gcc not natively cross-compile, but there's this thing called "multilib" which makes things far more complicated. And that doesn't get into the various BSDs that embed the OS version and build system in the target triplet.
 
 qo makes the following compromise. Given the following terms:
 
@@ -86,7 +88,7 @@ qo makes the following compromise. Given the following terms:
 
 1. If the `-target` option is passed to qo to explicitly specify a triplet to use, that triplet is used, no questions asked. No mulitlib flags will be appended to the command line.
 2. Otherwise, if the target is the same as the host, unqualified binaries are run, and multilib flags may or may not be appended.
-3. Otherwise, if the host OS is not Windows, if the host arch is either `386` or `amd64` and the target arch is either `386` or `amd64`, a multilib flag is appended, and the unqualified binaries are run.
+3. Otherwise, if the target OS is the same as the host OS and host OS is not Windows, if the host arch is either `386` or `amd64` and the target arch is either `386` or `amd64`, a multilib flag is appended, and the unqualified binaries are run.
 4. Otherwise, if using clang, a generic target triplet is generated and used.
 5. Otherwise, if the target OS is windows, MinGW-w64 binaries are used.
 6. Otherwise, an error occurs.
