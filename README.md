@@ -11,16 +11,22 @@ Let's say you have a simple project in a directory:
 ```
 $ cd project
 $ ls
-file1.c file2.c file3.c file4.c project.h
+file1.c  file2.c  file3.c  file4.c  project.h
 ```
 
 To build this project as it stands, simply invoke qo with no arguments:
 
 ```
 $ qo
+[  0%] Beginning build
+[ 20%] Compiled file1.c
+[ 40%] Compiled file3.c
+[ 60%] Compiled file4.c
+[ 80%] Compiled file2.c
+[100%] Linking project
 ```
 
-You should see the status of the build as it happens, and upon completion, the compiled program will be left as the executable `project` (named after the project directory) in the project directory, ready for running:
+You should see the status of the build as it happens (as above), and upon completion, the compiled program will be left as the executable `project` (named after the project directory) in the project directory, ready for running:
 
 ```
 $ ./project
