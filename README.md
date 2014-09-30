@@ -23,7 +23,7 @@ $ qo
 [ 40%] Compiled file3.c
 [ 60%] Compiled file4.c
 [ 80%] Compiled file2.c
-[100%] Linking project
+[100%] Linked project
 ```
 
 You should see the status of the build as it happens (as above), and upon completion, the compiled program will be left as the executable `project` (named after the project directory) in the project directory, ready for running:

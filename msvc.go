@@ -118,7 +118,7 @@ func (m *MSVC) Link(objects []string, ldflags []string, libs []string) *Executor
 	}
 	line = append(line, "/OUT:" + target)			// note: one parameter
 	return &Executor{
-		Name:	"Linking " + target,
+		Name:	"Linked " + target,
 		Line:		line,
 	}
 }

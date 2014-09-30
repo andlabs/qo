@@ -119,7 +119,7 @@ func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Execu
 	}
 	line = append(line, "-o", target)
 	return &Executor{
-		Name:	"Linking " + target,
+		Name:	"Linked " + target,
 		Line:		line,
 	}
 }
