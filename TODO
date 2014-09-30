@@ -6,6 +6,7 @@
 - sdl-config? wx-config?
 - in-source build tag exclusion
 - a 'unix' OS tag (requires in-source build tag exclusions)
+- set up a FreeBSD target that uses cc? or make it just require clang?
 
 * TODO also need to add:
 	* gresource files: `.xml` with root tag `<gresources>`
