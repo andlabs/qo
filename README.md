@@ -4,8 +4,10 @@ qo is a new build system for C and C++ (though I can add other languages later).
 
 Enjoy! Suggestions, fixes, etc. welcome.
 
-## Getting started
+## Installing
+qo is written in [Go](http://golang.org/). It has no outside dependencies and does not use cgo, so a compiled qo binary is statically linked and ready to run out of the box. Once the project matures more, I may offer prebuilt binaries for download.
 
+## Getting Started
 Let's say you have a simple project in a directory:
 
 ```
