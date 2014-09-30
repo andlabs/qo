@@ -38,7 +38,7 @@ To build a debug version, pass `-g`:
 $ qo -g
 ```
 
-To see the build as it happens, pass `-x`.
+To see the individual commands as they happen, pass `-x`.
 
 Note that qo automatically builds with as many reasonable compiler diagnostics as possible enabled.
 
