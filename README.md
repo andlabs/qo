@@ -123,8 +123,10 @@ qo makes the following compromise. Given the following terms:
 For more information, see [this](http://stackoverflow.com/a/26101710/3408572) and its references.
 
 ## Notes
-### A note on optional features
+### A note on optional features and cyclic dependencies
 qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).
+
+In a related vein, cyclic dependencies (usually caused by optional features, as is the case with GLib ↔ GVFS) should also be avoided.
 
 ### Notes on MSVC
 The version of MSVC used defines how much C99 or C++11 can be used.
