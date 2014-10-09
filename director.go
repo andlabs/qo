@@ -35,7 +35,7 @@ func buildScript() {
 		objects = append(objects, obj)
 	}
 	for _, f := range cppfiles {
-		s, obj := toolchain.BuildCXXFile(f, cflags)
+		s, obj := toolchain.BuildCXXFile(f, cxxflags)
 		stage1 = append(stage1, s[0]...)
 		stage2 = append(stage2, s[1]...)
 		stage3 = append(stage3, s[2]...)
@@ -49,7 +49,7 @@ func buildScript() {
 		objects = append(objects, obj)
 	}
 	for _, f := range mmfiles {
-		s, obj := toolchain.BuildMMFile(f, cflags)
+		s, obj := toolchain.BuildMMFile(f, cxxflags)
 		stage1 = append(stage1, s[0]...)
 		stage2 = append(stage2, s[1]...)
 		stage3 = append(stage3, s[2]...)

@@ -52,11 +52,11 @@ func parseFile(filename string) {
 		case "LDFLAGS:":
 			ldflags = append(ldflags, parts[1:]...)
 		case "pkg-config:":
-			cflags := pkgconfig("--cflags", parts[1:])
-			libs := pkgconfig("--libs", parts[1:])
-			cflags = append(cflags, cflags...)
-			cxxflags = append(cxxflags, cflags...)
-			ldflags = append(ldflags, libs...)
+			xcflags := pkgconfig("--cflags", parts[1:])
+			xlibs := pkgconfig("--libs", parts[1:])
+			cflags = append(cflags, xcflags...)
+			cxxflags = append(cxxflags, xcflags...)
+			ldflags = append(ldflags, xlibs...)
 		case "LIBS:":
 			for i := 1; i < len(parts); i++ {
 				libs = append(libs, parts[i])
