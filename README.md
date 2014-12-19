@@ -1,6 +1,6 @@
 # qo: a build system for C/C++
 
-qo is a new build system for C and C++ (though I can add other languages later). In contrast to existing build systems, which require the use of not only a Makefile but also an assortment of complex configuration files (or multiple stages thereof), qo doesn't use any. Instead, custom build settings are embedded using simple directives directly into the source code of your program. qo conditionally compiles each source file based on its filename. qo also supports some resource files normally compiled inot the program. Debug builds and cross-compiles are also intended to be done as easily as possible.
+qo is a new build system for C and C++ (though I can add other languages later). In contrast to existing build systems, which require the use of not only a Makefile but also an assortment of complex configuration files (or multiple stages thereof), qo doesn't use any. Instead, custom build settings are embedded using simple directives directly into the source code of your program. qo conditionally compiles each source file based on its filename. qo also supports some resource files normally compiled into the program. Debug builds and cross-compiles are also intended to be done as easily as possible.
 
 Enjoy! Suggestions, fixes, etc. welcome.
 
