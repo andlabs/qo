@@ -9,6 +9,7 @@
 - set up a FreeBSD target that uses cc? or make it just require clang?
 - build files in their directories, not the current one
 - build named source files here
+- LOAD BALANCING
 
 * TODO also need to add:
 	* gresource files: `.xml` with root tag `<gresources>`
