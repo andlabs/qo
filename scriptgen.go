@@ -21,7 +21,7 @@ func mergeScript(s []Stage) {
 
 	// first append existing steps
 	for i = 0; i < len(s); i++ {
-		if i > len(script) {
+		if i >= len(script) {
 			break
 		}
 		script[i] = append(script[i], s[i]...)
@@ -68,4 +68,5 @@ func buildScript() {
 
 	s := toolchain.Link(objects, ldflags, libs)
 	script = append(script, Stage{s})
+	nSteps++
 }
