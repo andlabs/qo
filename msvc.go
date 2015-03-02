@@ -98,7 +98,7 @@ func (m *MSVC) BuildRCFile(filename string, cflags []string) (stages []Stage, ob
 	return stages, object
 }
 
-func (m *MSVC) Link(objects []string, ldflags []string, libs []string) *Executor {
+func (m *MSVC) Link(objects []string, ldflags []string, libs []string) *Step {
 	target := targetName()
 	for i := 0; i < len(libs); i++ {
 		libs[i] = libs[i] + ".lib"

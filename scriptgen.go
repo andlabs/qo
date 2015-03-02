@@ -24,12 +24,12 @@ func mergeScript(s []Stage) {
 		if i > len(script) {
 			break
 		}
-		stage[i] = append(stage[i], s[i]...)
+		script[i] = append(script[i], s[i]...)
 		nSteps += len(s[i])
 	}
 	// now add new stages
 	for ; i < len(s); i++ {
-		stage = append(stage, s[i])
+		script = append(script, s[i])
 		nSteps += len(s[i])
 	}
 }

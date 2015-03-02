@@ -31,7 +31,7 @@ func runStage(s Stage) {
 	// TODO make an option
 	for i := 0; i < runtime.NumCPU(); i++ {
 		wg.Add(1)
-		go worker(in, out, wg)
+		go runner(in, out, wg)
 	}
 	wg.Add(1)
 	go func() {
