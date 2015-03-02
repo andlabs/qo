@@ -5,7 +5,7 @@ qo is a new build system for C and C++ (though I can add other languages later).
 Enjoy! Suggestions, fixes, etc. welcome.
 
 ## News
-**2 March 2015**<br>I rewrote the actual build script part of the program a bit: some of the internal names have changed, a script can have an arbitrary number of stages (groups of steps that must be completed before the next group can start), and most important, **load balancing**. A future change will provide an option to change the number of concurrent build steps (currently set to [the number of CPU cores on your system](http://golang.org/pkg/runtime/#NumCPU)).
+**2 March 2015**<br>I rewrote the actual build script part of the program a bit: some of the internal names have changed, a script can have an arbitrary number of stages (groups of steps that must be completed before the next group can start), and most important, **load balancing**. A future change will provide an option to change the number of concurrent build steps (currently set to [the number of CPU cores on your system](http://golang.org/pkg/runtime/#NumCPU)). Please report any bugs should this have broken anything.
 
 ## Installing
 qo is written in [Go](http://golang.org/). It has no outside dependencies and does not use cgo, so a compiled qo binary is statically linked and ready to run out of the box. Once the project matures more, I may offer prebuilt binaries for download.
