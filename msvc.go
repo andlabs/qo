@@ -32,14 +32,12 @@ func (m *MSVC) buildRegularFile(std string, cflags []string, filename string) (s
 		line = append(line, "/Z7")			// keep debug information in the object file
 	}
 	line = append(line, "/Fo" + object)		// note: one parameter
-	e := &Executor{
+	s := &Step{
 		Name:	"Compiled " + filename,
 		Line:		line,
 	}
 	stages = []Stage{
-		nil,
-		Stage{e},
-		nil,
+		Stage{s},
 	}
 	return stages, object
 }
@@ -78,7 +76,7 @@ func (m *MSVC) BuildRCFile(filename string, cflags []string) (stages []Stage, ob
 		"/fo", resfile,		// note: two parameters
 	}, cflags...)
 	rcline = append(rcline, filename)
-	e := &Executor{
+	s := &Step{
 		Name:	"Created RES file from " + filename,
 		Line:		rcline,
 	}
@@ -89,14 +87,13 @@ func (m *MSVC) BuildRCFile(filename string, cflags []string) (stages []Stage, ob
 		"/out:" + object,	// note: one parameter
 		resfile,
 	}, cflags...)
-	f := &Executor{
+	t := &Step{
 		Name:	"Compiled object file from " + filename,
 		Line:		cvtline,
 	}
 	stages = []Stage{
-		nil,
-		Stage{e},
-		Stage{f},
+		Stage{s},
+		Stage{t},
 	}
 	return stages, object
 }
@@ -117,7 +114,7 @@ func (m *MSVC) Link(objects []string, ldflags []string, libs []string) *Executor
 		// TODO MSDN claims it's not possible to have embedded debug symbols (apparently COFF doesn't exist)
 	}
 	line = append(line, "/OUT:" + target)			// note: one parameter
-	return &Executor{
+	return &Step{
 		Name:	"Linked " + target,
 		Line:		line,
 	}

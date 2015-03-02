@@ -35,14 +35,12 @@ func (g *GCCBase) buildRegularFile(cc string, std string, cflags []string, filen
 		line = append(line, "-g")
 	}
 	line = append(line, "-o", object)
-	e := &Executor{
+	s := &Step{
 		Name:	"Compiled " + filename,
 		Line:		line,
 	}
 	stages = []Stage{
-		nil,
-		Stage{e},
-		nil,
+		Stage{s},
 	}
 	return stages, object
 }
@@ -85,19 +83,17 @@ func (g *GCCBase) BuildRCFile(filename string, cflags []string) (stages []Stage,
 		filename,
 		object,
 	}, cflags...)
-	e := &Executor{
+	s := &Step{
 		Name:	"Compiled " + filename,
 		Line:		line,
 	}
 	stages = []Stage{
-		nil,
-		Stage{e},
-		nil,
+		Stage{s},
 	}
 	return stages, object
 }
 
-func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Executor {
+func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Step {
 	if g.LD == "" {
 		g.LD = g.CC
 	}
@@ -118,7 +114,7 @@ func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Execu
 		line = append(line, "-g")
 	}
 	line = append(line, "-o", target)
-	return &Executor{
+	return &Step{
 		Name:	"Linked " + target,
 		Line:		line,
 	}

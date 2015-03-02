@@ -32,3 +32,9 @@ func (s *Step) Do() {
 	cmd.Stderr = s.Output
 	s.Error = cmd.Run()
 }
+
+// Stage is a list of Steps.
+// Each Step in the Stage is run concurrently.
+// A build process consists of multiple Stages.
+// All Steps in the current Stage must be run to completion before other Steps will run.
+type Stage []*Step
