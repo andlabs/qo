@@ -122,6 +122,7 @@ func (g *GCCBase) Link(objects []string, ldflags []string, libs []string) *Step 
 
 // TODO:
 // - MinGW static libgcc/libsjlj/libwinpthread/etc.
+// 	- -static-libgcc
 
 var triplet = flag.String("triplet", "", "gcc/clang target triplet to use; see README")
 
