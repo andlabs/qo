@@ -78,7 +78,7 @@ The two most important (and most portable) directives are `pkg-config` and `LIBS
 // #qo LIBS: pwquality sqlite3
 ```
 
-For more ocntrol over the command lines for compiling each file, the `CFLAGS`, `CXXFLAGS`, and `LDFLAGS` directives pass their `arguments` as extra arguments to the C compiler, C++ compiler, and linker, respectively.
+For more control over the command lines for compiling each file, the `CFLAGS`, `CXXFLAGS`, and `LDFLAGS` directives pass their `arguments` as extra arguments to the C compiler, C++ compiler, and linker, respectively.
 
 `#qo` directives are assembled from all source files together. That is, do not copy the directives into each source file; bad things will happen.
 
@@ -95,7 +95,7 @@ By default, qo builds for the system you are presently running (actually the sys
 
 (qo by default tends toward gcc/clang-based toolchains.)
 
-In addition, qo will omit files and folders from the build if they are intended for a differnet OS and/or architecture than the target. To omit a file, have `_OS`, `_arch`, or `_OS_arch` before the extension. To omit a folder, its name must consist entirely of `OS`, `arch`, or `OS_arch`. For example:
+In addition, qo will omit files and folders from the build if they are intended for a different OS and/or architecture than the target. To omit a file, have `_OS`, `_arch`, or `_OS_arch` before the extension. To omit a folder, its name must consist entirely of `OS`, `arch`, or `OS_arch`. For example:
 
 ```
 file.c                compiled always
@@ -127,7 +127,7 @@ For more information, see [this](http://stackoverflow.com/a/26101710/3408572) an
 
 ## Notes
 ### A note on optional features and cyclic dependencies
-qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't sihp with pic support (even though I'm probably the only person int he world that still uses troff).
+qo does not support the notion of optional features: everything in the recursive directory tree of the current directory is compiled. I personally don't like features being optional; if something really needs to be conditional, it should be a plugin, and there's no reason to ship a gimped or feature-incomplete version of a program. I don't like how graphviz packages in at least Ubuntu don't ship with pic support (even though I'm probably the only person int he world that still uses troff).
 
 In a related vein, cyclic dependencies (usually caused by optional features, as is the case with GLib ↔ GVFS) should also be avoided.
 
