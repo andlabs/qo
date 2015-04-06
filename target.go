@@ -29,6 +29,11 @@ func targetName() string {
 var supportedOSs = strings.Fields("windows darwin linux freebsd openbsd netbsd dragonfly solaris")
 var supportedArchs = strings.Fields("386 amd64")
 
+var isNotUnix = map[string]bool{
+	"windows":	true,
+	"plan9":		true,
+}
+
 func init() {
 	sort.Strings(supportedOSs)
 	sort.Strings(supportedArchs)
@@ -57,6 +62,14 @@ func computeExcludeSuffixes() {
 		excludeFolders = append(excludeFolders, arch)
 		excludeSuffixes = append(excludeSuffixes, "_" + *targetOS + "_" + arch)
 		excludeFolders = append(excludeFolders, *targetOS + "_" + arch)
+	}
+	if isNotUnix[*targetOS] {
+		excludeSuffixes = append(excludeSuffixes, "_unix")
+		excludeFolders = append(excludeFolders, "unix")
+		for _, arch := range supportedArchs {
+			excludeSuffixes = append(excludeSuffixes, "_unix_" + arch)
+			excludeFolders = append(excludeFolders, "unix_" + arch)
+		}
 	}
 }
 
