@@ -9,6 +9,7 @@ import (
 type MSVC struct			{                                         }
 
 // TODO /MDd, /MTd
+// TODO /EHa?
 
 func (m *MSVC) buildRegularFile(std string, cflags []string, filename string) (stages []Stage, object string) {
 	object = objectName(filename, ".o")
