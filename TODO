@@ -10,6 +10,7 @@
 - build files in their directories, not the current one
 - build named source files here
 - LOAD BALANCING
+- link against the real visual c++ runtime, not the windows private one
 
 * TODO also need to add:
 	* gresource files: `.xml` with root tag `<gresources>`
