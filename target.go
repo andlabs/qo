@@ -42,6 +42,8 @@ func init() {
 var excludeSuffixes []string
 var excludeFolders []string
 
+var nounix = flag.Bool("nounix", false, "do not consider the current OS as a Unix system even if it would usually otherwise")
+
 func computeExcludeSuffixes() {
 	for _, os := range supportedOSs {
 		if os == *targetOS {
@@ -63,7 +65,7 @@ func computeExcludeSuffixes() {
 		excludeSuffixes = append(excludeSuffixes, "_" + *targetOS + "_" + arch)
 		excludeFolders = append(excludeFolders, *targetOS + "_" + arch)
 	}
-	if isNotUnix[*targetOS] {
+	if *nounix || isNotUnix[*targetOS] {
 		excludeSuffixes = append(excludeSuffixes, "_unix")
 		excludeFolders = append(excludeFolders, "unix")
 		for _, arch := range supportedArchs {

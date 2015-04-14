@@ -5,6 +5,8 @@ qo is a new build system for C and C++ (though I can add other languages later).
 Enjoy! Suggestions, fixes, etc. welcome.
 
 ## News
+**14 April 2015**<br>Added a `-nounix` flag to inhibit the `unix` pseudo-OS.
+
 **6 April 2015**<br>Added `unix` pseudo-OS.
 
 **2 March 2015**<br>I rewrote the actual build script part of the program a bit: some of the internal names have changed, a script can have an arbitrary number of stages (groups of steps that must be completed before the next group can start), and most important, **load balancing**. A future change will provide an option to change the number of concurrent build steps (currently set to [the number of CPU cores on your system](http://golang.org/pkg/runtime/#NumCPU)). Please report any bugs should this have broken anything.
@@ -110,7 +112,7 @@ windows/              only trasversed on Windows
 windows_386/          only trasversed if targetting 386-based Windows
 ```
 
-In addition, the OS name `unix` is valid on all Unix systems (Linux, FreeBSD, Mac OS X, etc.).
+In addition, the OS name `unix` is valid on all Unix systems (Linux, FreeBSD, Mac OS X, etc.). You can choose to inhibit this with the `-nounix` flag.
 
 ## Cross-Compiler Executable Search Order
 Under the hood, however, cross-compiling is a very complex and problematic undertaking for historical and practical reasons. qo assumes you have a correctly configured cross-compiler setup for the target OS, architecture, and toolchain (even if it's just the toolchain).
