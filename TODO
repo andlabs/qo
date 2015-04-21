@@ -15,6 +15,7 @@
 	[12:57] <ktietz> you should use here always -static option, too.  As otherwise other gcc-libraries (as libgcc.DLL, libstdc++.dll, etc) getting linked in, as pe-coff is finally linked, they are linked on gcc's bootstrap against msvcrt.dll
 	- also note https://support.microsoft.com/en-us/kb/2661358
 - pkg-config cross-compiling notes: http://www.freedesktop.org/wiki/Software/pkg-config/CrossCompileProposal/
+- add -Wno-switch to silence missing enum cases warnings
 
 * TODO also need to add:
 	* gresource files: `.xml` with root tag `<gresources>`
