@@ -28,6 +28,8 @@ func (m *MSVC) buildRegularFile(std string, cflags []string, filename string) (s
 		"/sdl",
 		"/Wall",
 		"/Wp64",
+		"/wd4100",			// same as -Wno-unused-parameter
+		// TODO equivalent of -Wno-switch
 	}, cflags...)
 	if *debug {
 		line = append(line, "/Z7")			// keep debug information in the object file
